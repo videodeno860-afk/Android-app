@@ -44,7 +44,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE
+        # 2. APP MODULE BUILD GRADLE (Using core libraries only for guaranteed compile)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -61,13 +61,12 @@ jobs:
         }
         dependencies {
             implementation 'androidx.appcompat:appcompat:1.6.1'
-            implementation 'com.google.android.material:material:1.10.0'
         }
         EOF
 
         echo "include ':app'" > settings.gradle
 
-        # 3. UNIVERSAL STRINGS AND BASIC RESOURCE STYLES
+        # 3. UNIVERSAL STRINGS AND BASIC STABLE THEMES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -76,14 +75,13 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/values/themes.xml
         <resources>
-            <style name="Theme.ScientistAI" parent="Theme.AppCompat.DayNight.NoActionBar">
-                <item name="colorPrimary">#6200EE</item>
+            <style name="Theme.ScientistAI" parent="android:Theme.DeviceDefault.NoActionBar">
                 <item name="android:windowBackground">#121212</item>
             </style>
         </resources>
         EOF
 
-        # 4. FIXED ALL LAYOUTS WITH CORRECT ORIGINAL HTTP NAMESPACE
+        # 4. FIXED LAYOUTS WITH ORIGINAL NAMESPACE AND STANDARD TAGS
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -182,7 +180,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # 5. ALL JAVA RESTRUCTURING
+        # 5. ALL JAVA ACTIVITIES
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import androidx.appcompat.app.AppCompatActivity;
@@ -229,7 +227,7 @@ jobs:
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # 6. MASTER CLEAN ANDROID MANIFEST PIPELINE WITH CORRECT XMLNS HTTP
+        # 6. MASTER ANDROID MANIFEST WITH STABLE SYSTEM CONFIG
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
