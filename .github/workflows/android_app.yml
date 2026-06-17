@@ -61,6 +61,7 @@ jobs:
         }
         dependencies {
             implementation 'androidx.appcompat:appcompat:1.6.1'
+            implementation 'com.google.android.material:material:1.10.0'
         }
         EOF
 
@@ -82,10 +83,10 @@ jobs:
         </resources>
         EOF
 
-        # 4. FIXED XML LAYOUTS WITH HTTPS SCHEMA TO PREVENT COMPILER FAILURE
+        # 4. FIXED ALL LAYOUTS WITH CORRECT ORIGINAL HTTP NAMESPACE
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -104,7 +105,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_signup.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -117,7 +118,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_wallet.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -130,7 +131,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -146,7 +147,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_projects_list.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -159,7 +160,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="24dp"
@@ -170,7 +171,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -228,10 +229,10 @@ jobs:
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # 6. MASTER CLEAN ANDROID MANIFEST PIPELINE
+        # 6. MASTER CLEAN ANDROID MANIFEST PIPELINE WITH CORRECT XMLNS HTTP
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="https://schemas.android.com/apk/res/android">
+        <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <application
                 android:allowBackup="true"
