@@ -18,9 +18,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build Pure Android Project From Scratch
+    - name: Wipe and Rebuild Clean Android Structure
       run: |
-        echo "Creating strict separate directory structure..."
+        echo "Cleaning any conflicting files..."
+        rm -rf app build.gradle settings.gradle
+
+        echo "Creating strict fresh directory structure..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
