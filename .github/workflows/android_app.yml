@@ -44,7 +44,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Perfectly matched working versions)
+        # 2. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -61,8 +61,6 @@ jobs:
         }
         dependencies {
             implementation 'androidx.appcompat:appcompat:1.6.1'
-            implementation 'com.google.android.material:material:1.10.0'
-            implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
         }
         EOF
 
@@ -77,17 +75,17 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/values/themes.xml
         <resources>
-            <style name="Theme.ScientistAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+            <style name="Theme.ScientistAI" parent="Theme.AppCompat.DayNight.NoActionBar">
                 <item name="colorPrimary">#6200EE</item>
                 <item name="android:windowBackground">#121212</item>
             </style>
         </resources>
         EOF
 
-        # 4. ALL SEPARATE INDIVIDUAL UI SCREENS XML LAYOUTS
+        # 4. FIXED XML LAYOUTS WITH HTTPS SCHEMA TO PREVENT COMPILER FAILURE
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -106,20 +104,20 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_signup.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:padding="24dp"
             android:background="#1E1E1E">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔒 Secure Signup Vault" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
-            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Account / Details" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Account Details" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
         </LinearLayout>
         EOF
 
         cat << 'EOF' > app/src/main/res/layout/activity_wallet.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -132,7 +130,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -148,7 +146,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_projects_list.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -161,7 +159,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="24dp"
@@ -172,7 +170,7 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <LinearLayout xmlns:android="https://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
@@ -233,7 +231,7 @@ jobs:
         # 6. MASTER CLEAN ANDROID MANIFEST PIPELINE
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+        <manifest xmlns:android="https://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <application
                 android:allowBackup="true"
