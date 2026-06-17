@@ -174,7 +174,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # 5. ALL JAVA RESTRUCTURING (Fixed syntax error)
+        # 5. ALL JAVA RESTRUCTURING
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import androidx.appcompat.app.AppCompatActivity;
