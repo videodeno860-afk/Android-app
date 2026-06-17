@@ -18,17 +18,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Official Gradle Engine
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.4'
+    - name: Force Generate Stable Gradle Wrapper
+      run: |
+        echo "Resetting wrapper engine..."
+        npm install -g gradle-to-js || true
+        gradle wrapper --gradle-version 8.4 --distribution-type bin
 
     - name: Wipe and Rebuild Clean Android Structure
       run: |
-        echo "Cleaning any conflicting files..."
+        echo "Cleaning old conflicts..."
         rm -rf app build.gradle settings.gradle .gradle
 
-        echo "Creating strict fresh directory structure..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
@@ -44,7 +44,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Using core libraries only for guaranteed compile)
+        # 2. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -66,7 +66,7 @@ jobs:
 
         echo "include ':app'" > settings.gradle
 
-        # 3. UNIVERSAL STRINGS AND BASIC STABLE THEMES
+        # 3. RESOURCE STRINGS & THEMES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -81,7 +81,7 @@ jobs:
         </resources>
         EOF
 
-        # 4. FIXED LAYOUTS WITH ORIGINAL NAMESPACE AND STANDARD TAGS
+        # 4. ALL SEPARATE LAYOUTS
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -227,7 +227,7 @@ jobs:
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # 6. MASTER ANDROID MANIFEST WITH STABLE SYSTEM CONFIG
+        # 6. MASTER ANDROID MANIFEST
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -253,8 +253,10 @@ jobs:
         </manifest>
         EOF
 
-    - name: Run Safe Official Compile Engine
-      run: gradle assembleDebug --no-daemon
+    - name: Run Direct Shell Compile Engine
+      run: |
+        chmod +x gradlew
+        ./gradlew assembleDebug --no-daemon
 
     - name: Convert Workspace to Backup ZIP
       run: |
