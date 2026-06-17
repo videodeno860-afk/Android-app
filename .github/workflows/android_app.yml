@@ -18,17 +18,23 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Wipe and Rebuild Clean Android Structure
-      run: |
-        echo "Cleaning old conflicts..."
-        rm -rf app build.gradle settings.gradle .gradle
+    - name: Setup Official Gradle Engine
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.4'
 
-        echo "Creating fresh directories..."
+    - name: Wipe Cache and Rebuild Fresh Android Structure
+      run: |
+        echo "Strictly wiping out all old gradle caches and bad files..."
+        rm -rf app build.gradle settings.gradle .gradle
+        rm -rf ~/.gradle/caches/
+
+        echo "Creating fresh directory workspace..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION
+        # 1. ROOT GRADLE CONFIGURATION (Forced clean repositories)
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -39,7 +45,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE
+        # 2. APP MODULE BUILD GRADLE (Zero conflicting dependencies)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -61,7 +67,7 @@ jobs:
 
         echo "include ':app'" > settings.gradle
 
-        # 3. RESOURCE STRINGS & THEMES
+        # 3. RESOURCE STRINGS & SYSTEM THEMES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -76,7 +82,7 @@ jobs:
         </resources>
         EOF
 
-        # 4. ALL LAYOUT XML FILES
+        # 4. ALL SEPARATE CLEAN LAYOUT XML FILES
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -248,13 +254,8 @@ jobs:
         </manifest>
         EOF
 
-    - name: Setup Official Gradle Engine
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.4'
-
-    - name: Run Official Compile Engine
-      run: gradle assembleDebug --no-daemon
+    - name: Run Safe Official Compile Engine
+      run: gradle assembleDebug --no-daemon --stacktrace
 
     - name: Convert Workspace to Backup ZIP
       run: |
