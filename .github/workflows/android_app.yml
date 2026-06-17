@@ -25,7 +25,7 @@ jobs:
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION (Locked with AGP 8.2.2)
+        # 1. ROOT GRADLE CONFIGURATION
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -36,7 +36,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE
+        # 2. APP MODULE BUILD GRADLE (Fixed standard combination for SDK 34)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -52,7 +52,8 @@ jobs:
             buildTypes { release { minifyEnabled false } }
         }
         dependencies {
-            implementation 'androidx.core:core:1.12.0'
+            implementation 'androidx.appcompat:appcompat:1.6.1'
+            implementation 'com.google.android.material:material:1.11.0'
         }
         EOF
 
@@ -67,7 +68,8 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/values/themes.xml
         <resources>
-            <style name="Theme.ScientistAI" parent="android:Theme.DeviceDefault.NoActionBar">
+            <style name="Theme.ScientistAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+                <item name="colorPrimary">#6200EE</item>
                 <item name="android:windowBackground">#121212</item>
             </style>
         </resources>
@@ -172,14 +174,14 @@ jobs:
         </LinearLayout>
         EOF
 
-        # 5. ALL JAVA RESTRUCTURING
+        # 5. ALL JAVA RESTRUCTURING (AppCompat Compatible)
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
-        import android.app.Activity;
+        import androidx.appcompat.app.AppCompatActivity;
         import android.content.Intent;
         import android.os.Bundle;
 
-        public class MainActivity extends Activity {
+        public class MainActivity extends AppCompatActivity {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -197,27 +199,27 @@ jobs:
 
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/HomeCanvasActivity.java
         package com.ai.scientist.inventor;
-        import android.app.Activity;
+        import androidx.appcompat.app.AppCompatActivity;
         import android.os.Bundle;
         import android.widget.Toast;
 
-        public class HomeCanvasActivity extends Activity {
+        public class HomeCanvasActivity extends AppCompatActivity {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home_canvas);
                 findViewById(R.id.btn_undo).setOnClickListener(v -> Toast.makeText(this, "Undo triggered", Toast.LENGTH_SHORT).show());
                 findViewById(R.id.btn_redo).setOnClickListener(v -> Toast.makeText(this, "Redo triggered", Toast.LENGTH_SHORT).show());
-                findViewById(R.id.btn_save).setOnClickListener(v -> Toast.makeText(this, "Invention Saved!", Toast.LENGTH_SHORT).show());
+                findViewById(v -> Toast.makeText(this, "Invention Saved!", Toast.LENGTH_SHORT).show());
             }
         }
         EOF
 
-        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class SignupActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_signup); } }" > app/src/main/java/com/ai/scientist/inventor/SignupActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class WalletActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_wallet); } }" > app/src/main/java/com/ai/scientist/inventor/WalletActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class ProjectsListActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_projects_list); } }" > app/src/main/java/com/ai/scientist/inventor/ProjectsListActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class ProfileActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class ChatActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class SignupActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_signup); } }" > app/src/main/java/com/ai/scientist/inventor/SignupActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class WalletActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_wallet); } }" > app/src/main/java/com/ai/scientist/inventor/WalletActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProjectsListActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_projects_list); } }" > app/src/main/java/com/ai/scientist/inventor/ProjectsListActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
         # 6. MASTER CLEAN ANDROID MANIFEST PIPELINE
         cat << 'EOF' > app/src/main/AndroidManifest.xml
