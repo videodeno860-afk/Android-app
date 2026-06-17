@@ -34,7 +34,7 @@ jobs:
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ANDROIDX ENABLER PROPERTIES
+        # 1. ANDROIDX ENABLER & DUPLICATE CLASS FIXERS
         cat << 'EOF' > gradle.properties
         android.useAndroidX=true
         android.enableJetifier=true
@@ -49,6 +49,13 @@ jobs:
         }
         allprojects {
             repositories { google(); mavenCentral() }
+            // Force resolution to prevent duplicate kotlin jvm/stdlib conflicts
+            configurations.all {
+                resolutionStrategy {
+                    exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
+                    exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk7"
+                }
+            }
         }
         EOF
 
@@ -286,4 +293,4 @@ jobs:
       with:
         name: Scientist-AI-Source-ZIP
         path: scientist_ai_clean_source.zip
-        
+        a
