@@ -18,10 +18,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Setup Official Gradle Engine
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.4'
+
     - name: Wipe and Rebuild Clean Android Structure
       run: |
         echo "Cleaning any conflicting files..."
-        rm -rf app build.gradle settings.gradle
+        rm -rf app build.gradle settings.gradle .gradle
 
         echo "Creating strict fresh directory structure..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
@@ -250,12 +255,8 @@ jobs:
         </manifest>
         EOF
 
-    - name: Generate Local Compatible Gradle Wrapper
-      run: |
-        gradle wrapper --gradle-version 8.4 --distribution-type bin
-
-    - name: Run Safe Local Wrapper Compile Engine
-      run: ./gradlew assembleDebug --no-daemon
+    - name: Run Safe Official Compile Engine
+      run: gradle assembleDebug --no-daemon
 
     - name: Convert Workspace to Backup ZIP
       run: |
