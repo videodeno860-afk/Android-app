@@ -1,4 +1,4 @@
-name: Ultimate Multi-Screen Scientist AI Factory
+name: Scientist AI Ultimate Automated Builder
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build_multi_screen_app:
+  build_complete_app:
     runs-on: ubuntu-latest
     steps:
     - name: Checkout Minimal Workspace
@@ -18,9 +18,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Generate Complete Multi-Screen Architecture Automatically
+    - name: Build Pure Android Architecture From Scratch
       run: |
-        echo "Initializing Real Multi-Screen Java Project Skeleton with Project List & Canvas Buttons..."
+        echo "Creating source directories..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
@@ -36,7 +36,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE
+        # 2. APP MODULE BUILD GRADLE (Bypassing all style constraints)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -60,38 +60,46 @@ jobs:
 
         echo "include ':app'" > settings.gradle
 
-        # ==========================================
-        # XML LAYOUTS GENERATION (Alag-Alag Screens)
-        # ==========================================
+        # 3. FIXED TOTAL VALUES & CORE COMPATIBLE SYSTEM THEME
+        cat << 'EOF' > app/src/main/res/values/strings.xml
+        <resources>
+            <string name="app_name">Scientist AI</string>
+        </resources>
+        EOF
 
-        # --- 1. MAIN DASHBOARD SCREEN ---
+        cat << 'EOF' > app/src/main/res/values/themes.xml
+        <resources>
+            <style name="Theme.ScientistAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+                <item name="colorPrimary">#6200EE</item>
+                <item name="colorSecondary">#03DAC6</item>
+                <item name="android:windowBackground">#121212</item>
+            </style>
+        </resources>
+        EOF
+
+        # 4. ALL SEPARATE INDIVIDUAL UI SCREENS XML LAYOUTS
+
+        # Layout 1: Main Menu Router
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:background="#121212"
             android:padding="16dp"
-            android:gravity="center">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔬 SCIENTIST AI"
-                android:textColor="#FFFFFF"
-                android:textSize="28sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="32dp"/>
+            android:gravity="center"
+            android:background="#121212">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 SCIENTIST AI ENGINE" android:textColor="#FFFFFF" android:textSize="26sp" android:textStyle="bold" android:layout_marginBottom="24dp"/>
             <Button android:id="@+id/btn_signup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="1. Signup Page" android:layout_marginBottom="8dp" android:backgroundTint="#6200EE"/>
             <Button android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="2. Wallet Page" android:layout_marginBottom="8dp" android:backgroundTint="#03DAC6"/>
             <Button android:id="@+id/btn_home" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="3. Home/3D Canvas" android:layout_marginBottom="8dp" android:backgroundTint="#BB86FC"/>
-            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. My Saved Projects List" android:layout_marginBottom="8dp" android:backgroundTint="#018786"/>
+            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. Saved Project List" android:layout_marginBottom="8dp" android:backgroundTint="#018786"/>
             <Button android:id="@+id/btn_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5. Profile Page" android:layout_marginBottom="8dp" android:backgroundTint="#3700B3"/>
             <Button android:id="@+id/btn_chat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="6. Chat / Scientist AI" android:backgroundTint="#CF6679"/>
         </LinearLayout>
         EOF
 
-        # --- 2. SIGNUP SCREEN ---
+        # Layout 2: Signup
         cat << 'EOF' > app/src/main/res/layout/activity_signup.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -100,13 +108,12 @@ jobs:
             android:orientation="vertical"
             android:padding="24dp"
             android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔒 Secure Signup Vault" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="24dp"/>
-            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Bank Account Number" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
-            <Button android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Lock Details (One-Time)" android:layout_marginTop="16dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔒 Secure Signup Vault" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Secure Details" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
         </LinearLayout>
         EOF
 
-        # --- 3. WALLET SCREEN ---
+        # Layout 3: Wallet Ledger
         cat << 'EOF' > app/src/main/res/layout/activity_wallet.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -115,13 +122,12 @@ jobs:
             android:orientation="vertical"
             android:padding="24dp"
             android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💰 Dual Currency Ledger" android:textColor="#FFFFFF" android:textSize="22sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Balance: $0.00 USD" android:textColor="#00FF00" android:textSize="18sp" android:layout_marginTop="24dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Balance: ₹0.00 INR" android:textColor="#00FF00" android:textSize="18sp" android:layout_marginTop="8dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💰 Dual Currency Balance Monitor" android:textColor="#FFFFFF" android:textSize="20sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Balance Tracker Ready" android:textColor="#00FF00" android:layout_marginTop="16dp"/>
         </LinearLayout>
         EOF
 
-        # --- 4. HOME SCREEN / 3D CANVAS WITH UNDO, REDO, SAVE ---
+        # Layout 4: Home Canvas Controls
         cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -129,26 +135,16 @@ jobs:
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:background="#1E1E1E">
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📐 3D Shape Canvas &amp; Design Studio" android:textColor="#FFFFFF" android:textSize="20sp" android:padding="16dp" android:gravity="center" android:background="#333333"/>
-            
-            <LinearLayout 
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:padding="8dp"
-                android:background="#252525">
-                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo" android:layout_marginRight="8dp" android:backgroundTint="#555555"/>
-                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo" android:layout_marginRight="8dp" android:backgroundTint="#555555"/>
-                <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💾 Save Project" android:backgroundTint="#00875A"/>
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:padding="12dp" android:background="#252525">
+                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo" android:layout_marginEnd="8dp"/>
+                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo" android:layout_marginEnd="8dp"/>
+                <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💾 Save" android:backgroundTint="#00875A"/>
             </LinearLayout>
-
-            <View android:layout_width="match_parent" android:layout_height="300dp" android:background="#2D2D2D" android:layout_margin="16dp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="[Interactive Canvas Grid Area]" android:textColor="#888888" android:layout_gravity="center"/>
+            <View android:layout_width="match_parent" android:layout_height="250dp" android:background="#2D2D2D" android:layout_margin="16dp"/>
         </LinearLayout>
         EOF
 
-        # --- 5. PROJECT LIST SCREEN ---
+        # Layout 5: Projects List
         cat << 'EOF' > app/src/main/res/layout/activity_projects_list.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -157,32 +153,24 @@ jobs:
             android:orientation="vertical"
             android:padding="16dp"
             android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📁 My Inventions &amp; Project List" android:textColor="#FFFFFF" android:textSize="22sp" android:textStyle="bold" android:layout_marginBottom="16dp"/>
-            
-            <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
-                <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 Project 1: Quantum Wormhole Stabilizer Core\nStatus: Saved | Math Sync: Verified" android:textColor="#00FF00" android:background="#1E1E1E" android:padding="12dp" android:layout_marginBottom="8dp"/>
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🛸 Project 2: Plasma Propulsion Jet Thruster\nStatus: Draft | CAD File Rendered" android:textColor="#BB86FC" android:background="#1E1E1E" android:padding="12dp" android:layout_marginBottom="8dp"/>
-                    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="⚛️ Project 3: Anti-Entropy Power Grid Reactor\nStatus: Production Ready" android:textColor="#03DAC6" android:background="#1E1E1E" android:padding="12dp" android:layout_marginBottom="8dp"/>
-                </LinearLayout>
-            </ScrollView>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📁 Invention Project Dashboard" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 System Database List Sync Terminal" android:textColor="#03DAC6" android:background="#1E1E1E" android:padding="16dp"/>
         </LinearLayout>
         EOF
 
-        # --- 6. PROFILE SCREEN ---
+        # Layout 6: Profile Portfolio
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
             android:padding="24dp"
             android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤 Inventor Portfolio Profile" android:textColor="#FFFFFF" android:textSize="22sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤 Profile Workspace" android:textColor="#FFFFFF" android:textSize="22sp"/>
         </LinearLayout>
         EOF
 
-        # --- 7. CHAT SCREEN ---
+        # Layout 7: Scientific AI Chat
         cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -191,16 +179,12 @@ jobs:
             android:orientation="vertical"
             android:padding="16dp"
             android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧠 Scientist AI Core System" android:textColor="#FFFFFF" android:textSize="20sp" android:layout_marginBottom="16dp"/>
-            <ScrollView android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:background="#1E1E1E" android:padding="8dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="System Initialized. Active Knowledge Fields Loaded." android:textColor="#00FF00"/>
-            </ScrollView>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧠 Scientist AI Core Chat Terminal" android:textColor="#FFFFFF" android:textSize="20sp"/>
+            <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:background="#1E1E1E" android:layout_marginTop="12dp"/>
         </LinearLayout>
         EOF
 
-        # ==========================================
-        # JAVA SOURCE CODE GENERATION (Intent Navigation)
-        # ==========================================
+        # 5. ALL CORRESPONDING JAVA CONTROL CONTROLLERS
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import android.content.Intent;
@@ -223,7 +207,6 @@ jobs:
         }
         EOF
 
-        # --- HOME CANVAS ACTIVITY WITH ACTION TOASTS ---
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/HomeCanvasActivity.java
         package com.ai.scientist.inventor;
         import android.os.Bundle;
@@ -235,10 +218,9 @@ jobs:
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_home_canvas);
-
-                findViewById(R.id.btn_undo).setOnClickListener(v -> Toast.makeText(this, "Undo Action Processed", Toast.LENGTH_SHORT).show());
-                findViewById(R.id.btn_redo).setOnClickListener(v -> Toast.makeText(this, "Redo Action Processed", Toast.LENGTH_SHORT).show());
-                findViewById(R.id.btn_save).setOnClickListener(v -> Toast.makeText(this, "Project Saved Successfully to Core Database!", Toast.LENGTH_LONG).show());
+                findViewById(R.id.btn_undo).setOnClickListener(v -> Toast.makeText(this, "Undo triggered", Toast.LENGTH_SHORT).show());
+                findViewById(R.id.btn_redo).setOnClickListener(v -> Toast.makeText(this, "Redo triggered", Toast.LENGTH_SHORT).show());
+                findViewById(R.id.btn_save).setOnClickListener(v -> Toast.makeText(this, "Invention Saved!", Toast.LENGTH_SHORT).show());
             }
         }
         EOF
@@ -249,18 +231,16 @@ jobs:
         echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
         echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # ==========================================
-        # MANIFEST & PERMISSIONS
-        # ==========================================
+        # 6. APP MANIFEST SYSTEM PIPELINE
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <application
                 android:allowBackup="true"
-                android:label="Scientist AI"
+                android:label="@string/app_name"
                 android:supportsRtl="true"
-                android:theme="@style/Theme.AppCompat.NoActionBar">
+                android:theme="@style/Theme.ScientistAI">
                 <activity android:name=".MainActivity" android:exported="true">
                     <intent-filter>
                         <action android:name="android.intent.action.MAIN" />
@@ -277,30 +257,27 @@ jobs:
         </manifest>
         EOF
 
-        echo '<resources><string name="app_name">Scientist AI</string></resources>' > app/src/main/res/values/strings.xml
-        
-        # Force Clean Wrapper setup
         gradle wrapper --gradle-version 8.2.2
         chmod +x gradlew
-        echo "Architecture Updated and Locked."
+        echo "Source Generation Successfully Finished."
 
-    - name: Compile and Run Safe Gradle Build
+    - name: Run Direct Gradle Compile Engine
       run: ./gradlew assembleDebug --no-daemon
 
-    - name: Package Complete Codebase to ZIP
+    - name: Convert Workspace to Backup ZIP
       run: |
         sudo apt-get install -y zip
-        zip -r scientist_ai_updated_source.zip . -x "*.git*" -x "*.gradle*" -x "*/build/*"
+        zip -r scientist_ai_final_source.zip . -x "*.git*" -x "*.gradle*" -x "*/build/*"
 
-    - name: Deploy Stable Green APK Output
+    - name: Upload Final Unsigned APK Product
       uses: actions/upload-artifact@v4
       with:
-        name: Scientist-AI-Upgraded-APK
+        name: Scientist-AI-Production-APK
         path: app/build/outputs/apk/debug/*.apk
 
-    - name: Deploy Code Backup Bundle
+    - name: Upload Editable Full ZIP Backup Bundle
       uses: actions/upload-artifact@v4
       with:
         name: Scientist-AI-Source-ZIP
-        path: scientist_ai_updated_source.zip
+        path: scientist_ai_final_source.zip
         
