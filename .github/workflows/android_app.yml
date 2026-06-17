@@ -26,7 +26,7 @@ jobs:
     - name: Wipe Cache and Rebuild Fresh Android Structure
       run: |
         echo "Strictly clearing all caches..."
-        rm -rf app build.gradle settings.gradle .gradle gradlew gradlew.bat gradle
+        rm -rf app build.gradle settings.gradle .gradle gradlew gradlew.bat gradle gradle.properties
         rm -rf ~/.gradle/caches/
 
         echo "Creating fresh directories..."
@@ -34,7 +34,14 @@ jobs:
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION
+        # 1. ANDROIDX ENABLER PROPERTIES (This fixes the theme/appcompat crash)
+        cat << 'EOF' > gradle.properties
+        android.useAndroidX=true
+        android.enableJetifier=true
+        org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+        EOF
+
+        # 2. ROOT GRADLE CONFIGURATION
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -45,7 +52,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE
+        # 3. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -68,7 +75,7 @@ jobs:
 
         echo "include ':app'" > settings.gradle
 
-        # 3. RESOURCE STRINGS & COMPATIBLE THEMES
+        # 4. RESOURCE STRINGS & COMPATIBLE THEMES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -83,7 +90,7 @@ jobs:
         </resources>
         EOF
 
-        # 4. MASTER LAYOUT XML FILES
+        # 5. LAYOUT XML FILES
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -161,8 +168,8 @@ jobs:
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            **android:layout_width="match_parent"**
+            **android:layout_height="match_parent"**
             android:padding="24dp"
             android:background="#1E1E1E">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤 Profile Workspace" android:textColor="#FFFFFF" android:textSize="22sp"/>
@@ -182,7 +189,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # 5. ALL JAVA ACTIVITIES
+        # 6. ALL JAVA ACTIVITIES
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import androidx.appcompat.app.AppCompatActivity;
@@ -229,7 +236,7 @@ jobs:
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
         echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # 6. MASTER ANDROID MANIFEST
+        # 7. MASTER ANDROID MANIFEST
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -255,8 +262,7 @@ jobs:
         </manifest>
         EOF
 
-        # 7. FORCE GENERATE MISSING GRADLE WRAPPER
-        echo "Generating fresh workspace wrapper scripts..."
+        # 8. GENERATE WRAPPER FOR GRADLE
         gradle wrapper --gradle-version 8.4 --distribution-type bin
 
     - name: Run Safe Local Wrapper Compile Engine
