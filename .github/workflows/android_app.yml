@@ -18,17 +18,12 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Force Generate Stable Gradle Wrapper
-      run: |
-        echo "Resetting wrapper engine..."
-        npm install -g gradle-to-js || true
-        gradle wrapper --gradle-version 8.4 --distribution-type bin
-
     - name: Wipe and Rebuild Clean Android Structure
       run: |
         echo "Cleaning old conflicts..."
         rm -rf app build.gradle settings.gradle .gradle
 
+        echo "Creating fresh directories..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
@@ -81,7 +76,7 @@ jobs:
         </resources>
         EOF
 
-        # 4. ALL SEPARATE LAYOUTS
+        # 4. ALL LAYOUT XML FILES
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -253,10 +248,13 @@ jobs:
         </manifest>
         EOF
 
-    - name: Run Direct Shell Compile Engine
-      run: |
-        chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
+    - name: Setup Official Gradle Engine
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.4'
+
+    - name: Run Official Compile Engine
+      run: gradle assembleDebug --no-daemon
 
     - name: Convert Workspace to Backup ZIP
       run: |
