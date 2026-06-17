@@ -34,7 +34,7 @@ jobs:
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ANDROIDX ENABLER PROPERTIES (This fixes the theme/appcompat crash)
+        # 1. ANDROIDX ENABLER PROPERTIES
         cat << 'EOF' > gradle.properties
         android.useAndroidX=true
         android.enableJetifier=true
@@ -168,8 +168,8 @@ jobs:
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            **android:layout_width="match_parent"**
-            **android:layout_height="match_parent"**
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:padding="24dp"
             android:background="#1E1E1E">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤 Profile Workspace" android:textColor="#FFFFFF" android:textSize="22sp"/>
