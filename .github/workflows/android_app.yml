@@ -36,7 +36,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Fixed standard combination for SDK 34)
+        # 2. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -174,7 +174,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # 5. ALL JAVA RESTRUCTURING (AppCompat Compatible)
+        # 5. ALL JAVA RESTRUCTURING (Fixed syntax error)
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import androidx.appcompat.app.AppCompatActivity;
@@ -210,7 +210,7 @@ jobs:
                 setContentView(R.layout.activity_home_canvas);
                 findViewById(R.id.btn_undo).setOnClickListener(v -> Toast.makeText(this, "Undo triggered", Toast.LENGTH_SHORT).show());
                 findViewById(R.id.btn_redo).setOnClickListener(v -> Toast.makeText(this, "Redo triggered", Toast.LENGTH_SHORT).show());
-                findViewById(v -> Toast.makeText(this, "Invention Saved!", Toast.LENGTH_SHORT).show());
+                findViewById(R.id.btn_save).setOnClickListener(v -> Toast.makeText(this, "Invention Saved!", Toast.LENGTH_SHORT).show());
             }
         }
         EOF
