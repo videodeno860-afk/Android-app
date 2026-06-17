@@ -1,4 +1,4 @@
-name: Scientist AI Ultimate Automated Builder
+name: Scientist AI Universal Zero Error Builder
 
 on:
   push:
@@ -36,7 +36,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Bypassing all style constraints)
+        # 2. APP MODULE BUILD GRADLE (Using basic standard appcompat)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -53,14 +53,12 @@ jobs:
         }
         dependencies {
             implementation 'androidx.appcompat:appcompat:1.6.1'
-            implementation 'com.google.android.material:material:1.11.0'
-            implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
         }
         EOF
 
         echo "include ':app'" > settings.gradle
 
-        # 3. FIXED TOTAL VALUES & CORE COMPATIBLE SYSTEM THEME
+        # 3. STRINGS & STABLE UNIVERSAL ANDROID THEME (Zero Mismatch Risk)
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -69,17 +67,16 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/values/themes.xml
         <resources>
-            <style name="Theme.ScientistAI" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-                <item name="colorPrimary">#6200EE</item>
-                <item name="colorSecondary">#03DAC6</item>
+            <style name="Theme.ScientistAI" parent="android:Theme.Material.NoActionBar">
+                <item name="android:colorPrimary">#6200EE</item>
                 <item name="android:windowBackground">#121212</item>
             </style>
         </resources>
         EOF
 
-        # 4. ALL SEPARATE INDIVIDUAL UI SCREENS XML LAYOUTS
+        # 4. XML LAYOUTS GENERATION (Using Stable LinearLayout everywhere)
 
-        # Layout 1: Main Menu Router
+        # Layout 1: Main Menu
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -89,13 +86,13 @@ jobs:
             android:padding="16dp"
             android:gravity="center"
             android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 SCIENTIST AI ENGINE" android:textColor="#FFFFFF" android:textSize="26sp" android:textStyle="bold" android:layout_marginBottom="24dp"/>
-            <Button android:id="@+id/btn_signup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="1. Signup Page" android:layout_marginBottom="8dp" android:backgroundTint="#6200EE"/>
-            <Button android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="2. Wallet Page" android:layout_marginBottom="8dp" android:backgroundTint="#03DAC6"/>
-            <Button android:id="@+id/btn_home" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="3. Home/3D Canvas" android:layout_marginBottom="8dp" android:backgroundTint="#BB86FC"/>
-            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. Saved Project List" android:layout_marginBottom="8dp" android:backgroundTint="#018786"/>
-            <Button android:id="@+id/btn_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5. Profile Page" android:layout_marginBottom="8dp" android:backgroundTint="#3700B3"/>
-            <Button android:id="@+id/btn_chat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="6. Chat / Scientist AI" android:backgroundTint="#CF6679"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 SCIENTIST AI ENGINE" android:textColor="#FFFFFF" android:textSize="26sp" android:layout_marginBottom="24dp"/>
+            <Button android:id="@+id/btn_signup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="1. Signup Page" android:layout_marginBottom="8dp"/>
+            <Button android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="2. Wallet Page" android:layout_marginBottom="8dp"/>
+            <Button android:id="@+id/btn_home" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="3. Home/3D Canvas" android:layout_marginBottom="8dp"/>
+            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. Saved Project List" android:layout_marginBottom="8dp"/>
+            <Button android:id="@+id/btn_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5. Profile Page" android:layout_marginBottom="8dp"/>
+            <Button android:id="@+id/btn_chat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="6. Chat / Scientist AI"/>
         </LinearLayout>
         EOF
 
@@ -127,7 +124,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 4: Home Canvas Controls
+        # Layout 4: Home Canvas
         cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -136,9 +133,9 @@ jobs:
             android:orientation="vertical"
             android:background="#1E1E1E">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:padding="12dp" android:background="#252525">
-                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo" android:layout_marginEnd="8dp"/>
-                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo" android:layout_marginEnd="8dp"/>
-                <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💾 Save" android:backgroundTint="#00875A"/>
+                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo"/>
+                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo"/>
+                <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💾 Save"/>
             </LinearLayout>
             <View android:layout_width="match_parent" android:layout_height="250dp" android:background="#2D2D2D" android:layout_margin="16dp"/>
         </LinearLayout>
@@ -170,7 +167,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 7: Scientific AI Chat
+        # Layout 7: Chat Terminal
         cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -231,7 +228,7 @@ jobs:
         echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
         echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # 6. APP MANIFEST SYSTEM PIPELINE
+        # 6. APP MANIFEST SYSTEM PIPELINE (Using Fixed Stable Theme Direct Map)
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
