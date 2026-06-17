@@ -17,7 +17,6 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
     - name: Generate Complete Multi-Screen Architecture Automatically
       run: |
@@ -26,7 +25,7 @@ jobs:
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION (Fixed for absolute compatibility)
+        # 1. ROOT GRADLE CONFIGURATION
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -222,7 +221,7 @@ jobs:
 
         echo '<resources><string name="app_name">Scientist AI</string></resources>' > app/src/main/res/values/strings.xml
         
-        # Force Clean Wrapper setup to lock compile engine
+        # Force Clean Wrapper setup
         gradle wrapper --gradle-version 8.2.2
         chmod +x gradlew
         echo "Architecture Locked."
