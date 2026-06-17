@@ -26,7 +26,7 @@ jobs:
     - name: Wipe Cache and Rebuild Fresh Android Structure
       run: |
         echo "Strictly clearing all caches..."
-        rm -rf app build.gradle settings.gradle .gradle
+        rm -rf app build.gradle settings.gradle .gradle gradlew gradlew.bat gradle
         rm -rf ~/.gradle/caches/
 
         echo "Creating fresh directories..."
@@ -45,7 +45,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Only Core AndroidX, No Heavy Material conflicts)
+        # 2. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -68,7 +68,7 @@ jobs:
 
         echo "include ':app'" > settings.gradle
 
-        # 3. RESOURCE STRINGS & DIRECT COMPATIBLE THEMES
+        # 3. RESOURCE STRINGS & COMPATIBLE THEMES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -255,8 +255,14 @@ jobs:
         </manifest>
         EOF
 
-    - name: Run Clean Official Compile Engine
-      run: gradle clean assembleDebug --no-daemon
+        # 7. FORCE GENERATE MISSING GRADLE WRAPPER
+        echo "Generating fresh workspace wrapper scripts..."
+        gradle wrapper --gradle-version 8.4 --distribution-type bin
+
+    - name: Run Safe Local Wrapper Compile Engine
+      run: |
+        chmod +x gradlew
+        ./gradlew clean assembleDebug --no-daemon
 
     - name: Convert Workspace to Backup ZIP
       run: |
