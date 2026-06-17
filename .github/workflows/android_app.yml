@@ -45,7 +45,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE
+        # 2. APP MODULE BUILD GRADLE (Only Core AndroidX, No Heavy Material conflicts)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -62,13 +62,13 @@ jobs:
         }
         dependencies {
             implementation 'androidx.appcompat:appcompat:1.6.1'
-            implementation 'com.google.android.material:material:1.10.0'
+            implementation 'androidx.core:core-ktx:1.12.0'
         }
         EOF
 
         echo "include ':app'" > settings.gradle
 
-        # 3. RESOURCE STRINGS & COMPATIBLE THEMES
+        # 3. RESOURCE STRINGS & DIRECT COMPATIBLE THEMES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
