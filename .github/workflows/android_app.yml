@@ -1,4 +1,4 @@
-name: Scientist AI Universal Zero Error Builder
+name: Scientist AI Ultimate Error Free Factory
 
 on:
   push:
@@ -18,14 +18,14 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Build Pure Android Architecture From Scratch
+    - name: Build Pure Android Project From Scratch
       run: |
-        echo "Creating source directories..."
+        echo "Creating strict separate directory structure..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION
+        # 1. ROOT GRADLE CONFIGURATION (Locked Stable Versions)
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -36,7 +36,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Using basic standard appcompat)
+        # 2. APP MODULE BUILD GRADLE (Minimal Clean Configuration)
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -52,13 +52,14 @@ jobs:
             buildTypes { release { minifyEnabled false } }
         }
         dependencies {
-            implementation 'androidx.appcompat:appcompat:1.6.1'
+            // Using standard Android base libraries to prevent any resource conflicts
+            implementation 'androidx.core:core:1.12.0'
         }
         EOF
 
         echo "include ':app'" > settings.gradle
 
-        # 3. STRINGS & STABLE UNIVERSAL ANDROID THEME (Zero Mismatch Risk)
+        # 3. UNIVERSAL STRINGS AND BASIC RESOURCE STYLES
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -67,36 +68,35 @@ jobs:
 
         cat << 'EOF' > app/src/main/res/values/themes.xml
         <resources>
-            <style name="Theme.ScientistAI" parent="android:Theme.Material.NoActionBar">
-                <item name="android:colorPrimary">#6200EE</item>
+            <style name="Theme.ScientistAI" parent="android:Theme.DeviceDefault.NoActionBar">
                 <item name="android:windowBackground">#121212</item>
             </style>
         </resources>
         EOF
 
-        # 4. XML LAYOUTS GENERATION (Using Stable LinearLayout everywhere)
+        # 4. ALL SEPARATE INDIVIDUAL UI SCREENS XML LAYOUTS
 
-        # Layout 1: Main Menu
+        # Layout 1: Main Dashboard Screen
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="16dp"
+            android:padding="20dp"
             android:gravity="center"
             android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 SCIENTIST AI ENGINE" android:textColor="#FFFFFF" android:textSize="26sp" android:layout_marginBottom="24dp"/>
-            <Button android:id="@+id/btn_signup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="1. Signup Page" android:layout_marginBottom="8dp"/>
-            <Button android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="2. Wallet Page" android:layout_marginBottom="8dp"/>
-            <Button android:id="@+id/btn_home" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="3. Home/3D Canvas" android:layout_marginBottom="8dp"/>
-            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. Saved Project List" android:layout_marginBottom="8dp"/>
-            <Button android:id="@+id/btn_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5. Profile Page" android:layout_marginBottom="8dp"/>
-            <Button android:id="@+id/btn_chat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="6. Chat / Scientist AI"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 SCIENTIST AI CORE" android:textColor="#FFFFFF" android:textSize="26sp" android:layout_marginBottom="30dp"/>
+            <Button android:id="@+id/btn_signup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="1. Signup Page" android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="2. Wallet Page" android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/btn_home" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="3. Home/3D Canvas" android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. Saved Project List" android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/btn_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5. Profile Page" android:layout_marginBottom="10dp"/>
+            <Button android:id="@+id/btn_chat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="6. Chat Terminal"/>
         </LinearLayout>
         EOF
 
-        # Layout 2: Signup
+        # Layout 2: Signup Vault
         cat << 'EOF' > app/src/main/res/layout/activity_signup.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -106,11 +106,11 @@ jobs:
             android:padding="24dp"
             android:background="#1E1E1E">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔒 Secure Signup Vault" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
-            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Secure Details" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
+            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Account / Details" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
         </LinearLayout>
         EOF
 
-        # Layout 3: Wallet Ledger
+        # Layout 3: Wallet Tracker
         cat << 'EOF' > app/src/main/res/layout/activity_wallet.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -119,12 +119,12 @@ jobs:
             android:orientation="vertical"
             android:padding="24dp"
             android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💰 Dual Currency Balance Monitor" android:textColor="#FFFFFF" android:textSize="20sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Balance Tracker Ready" android:textColor="#00FF00" android:layout_marginTop="16dp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💰 Balance Monitor" android:textColor="#FFFFFF" android:textSize="20sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="USD Balance: $0.00" android:textColor="#00FF00" android:layout_marginTop="16dp"/>
         </LinearLayout>
         EOF
 
-        # Layout 4: Home Canvas
+        # Layout 4: Home Canvas Workspace
         cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -133,15 +133,15 @@ jobs:
             android:orientation="vertical"
             android:background="#1E1E1E">
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:padding="12dp" android:background="#252525">
-                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo"/>
-                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo"/>
+                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo" android:layout_marginEnd="10dp"/>
+                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo" android:layout_marginEnd="10dp"/>
                 <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💾 Save"/>
             </LinearLayout>
             <View android:layout_width="match_parent" android:layout_height="250dp" android:background="#2D2D2D" android:layout_margin="16dp"/>
         </LinearLayout>
         EOF
 
-        # Layout 5: Projects List
+        # Layout 5: Projects List View
         cat << 'EOF' > app/src/main/res/layout/activity_projects_list.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -151,11 +151,11 @@ jobs:
             android:padding="16dp"
             android:background="#121212">
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📁 Invention Project Dashboard" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 System Database List Sync Terminal" android:textColor="#03DAC6" android:background="#1E1E1E" android:padding="16dp"/>
+            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 Sync Terminal Active" android:textColor="#03DAC6" android:background="#1E1E1E" android:padding="16dp"/>
         </LinearLayout>
         EOF
 
-        # Layout 6: Profile Portfolio
+        # Layout 6: Profile Portfolio View
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -167,7 +167,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 7: Chat Terminal
+        # Layout 7: AI Chat Terminal
         cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -176,19 +176,19 @@ jobs:
             android:orientation="vertical"
             android:padding="16dp"
             android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧠 Scientist AI Core Chat Terminal" android:textColor="#FFFFFF" android:textSize="20sp"/>
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧠 Scientist AI Core Chat" android:textColor="#FFFFFF" android:textSize="20sp"/>
             <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:background="#1E1E1E" android:layout_marginTop="12dp"/>
         </LinearLayout>
         EOF
 
-        # 5. ALL CORRESPONDING JAVA CONTROL CONTROLLERS
+        # 5. ALL JAVA RESTRUCTURING TO CONTROL RUNTIME
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
+        import android.app.Activity;
         import android.content.Intent;
         import android.os.Bundle;
-        import androidx.appcompat.app.AppCompatActivity;
 
-        public class MainActivity extends AppCompatActivity {
+        public class MainActivity extends Activity {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -206,11 +206,11 @@ jobs:
 
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/HomeCanvasActivity.java
         package com.ai.scientist.inventor;
+        import android.app.Activity;
         import android.os.Bundle;
         import android.widget.Toast;
-        import androidx.appcompat.app.AppCompatActivity;
 
-        public class HomeCanvasActivity extends AppCompatActivity {
+        public class HomeCanvasActivity extends Activity {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
@@ -222,13 +222,13 @@ jobs:
         }
         EOF
 
-        echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class SignupActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_signup); } }" > app/src/main/java/com/ai/scientist/inventor/SignupActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class WalletActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_wallet); } }" > app/src/main/java/com/ai/scientist/inventor/WalletActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ProjectsListActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_projects_list); } }" > app/src/main/java/com/ai/scientist/inventor/ProjectsListActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport android.os.Bundle;\nimport androidx.appcompat.app.AppCompatActivity;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class SignupActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_signup); } }" > app/src/main/java/com/ai/scientist/inventor/SignupActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class WalletActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_wallet); } }" > app/src/main/java/com/ai/scientist/inventor/WalletActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class ProjectsListActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_projects_list); } }" > app/src/main/java/com/ai/scientist/inventor/ProjectsListActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class ProfileActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
+        echo -e "package com.ai.scientist.inventor;\nimport android.app.Activity;\nimport android.os.Bundle;\npublic class ChatActivity extends Activity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
 
-        # 6. APP MANIFEST SYSTEM PIPELINE (Using Fixed Stable Theme Direct Map)
+        # 6. MASTER CLEAN ANDROID MANIFEST PIPELINE
         cat << 'EOF' > app/src/main/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -256,7 +256,7 @@ jobs:
 
         gradle wrapper --gradle-version 8.2.2
         chmod +x gradlew
-        echo "Source Generation Successfully Finished."
+        echo "Source Files Configured Cleanly."
 
     - name: Run Direct Gradle Compile Engine
       run: ./gradlew assembleDebug --no-daemon
@@ -264,7 +264,7 @@ jobs:
     - name: Convert Workspace to Backup ZIP
       run: |
         sudo apt-get install -y zip
-        zip -r scientist_ai_final_source.zip . -x "*.git*" -x "*.gradle*" -x "*/build/*"
+        zip -r scientist_ai_clean_source.zip . -x "*.git*" -x "*.gradle*" -x "*/build/*"
 
     - name: Upload Final Unsigned APK Product
       uses: actions/upload-artifact@v4
@@ -276,5 +276,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: Scientist-AI-Source-ZIP
-        path: scientist_ai_final_source.zip
+        path: scientist_ai_clean_source.zip
         
