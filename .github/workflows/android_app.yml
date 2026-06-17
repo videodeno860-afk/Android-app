@@ -18,6 +18,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
+    - name: Setup Modern Gradle Build Tool
+      uses: gradle/actions/setup-gradle@v3
+
     - name: Build Pure Android Project From Scratch
       run: |
         echo "Creating strict separate directory structure..."
@@ -25,7 +28,7 @@ jobs:
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION (Locked Stable Versions)
+        # 1. ROOT GRADLE CONFIGURATION (Compatible with Modern Gradle Engine)
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -52,7 +55,6 @@ jobs:
             buildTypes { release { minifyEnabled false } }
         }
         dependencies {
-            // Using standard Android base libraries to prevent any resource conflicts
             implementation 'androidx.core:core:1.12.0'
         }
         EOF
@@ -75,8 +77,6 @@ jobs:
         EOF
 
         # 4. ALL SEPARATE INDIVIDUAL UI SCREENS XML LAYOUTS
-
-        # Layout 1: Main Dashboard Screen
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -96,7 +96,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 2: Signup Vault
         cat << 'EOF' > app/src/main/res/layout/activity_signup.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -110,7 +109,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 3: Wallet Tracker
         cat << 'EOF' > app/src/main/res/layout/activity_wallet.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -124,7 +122,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 4: Home Canvas Workspace
         cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -141,7 +138,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 5: Projects List View
         cat << 'EOF' > app/src/main/res/layout/activity_projects_list.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -155,7 +151,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 6: Profile Portfolio View
         cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -167,7 +162,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # Layout 7: AI Chat Terminal
         cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -181,7 +175,7 @@ jobs:
         </LinearLayout>
         EOF
 
-        # 5. ALL JAVA RESTRUCTURING TO CONTROL RUNTIME
+        # 5. ALL JAVA RESTRUCTURING
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import android.app.Activity;
@@ -254,12 +248,8 @@ jobs:
         </manifest>
         EOF
 
-        gradle wrapper --gradle-version 8.2.2
-        chmod +x gradlew
-        echo "Source Files Configured Cleanly."
-
-    - name: Run Direct Gradle Compile Engine
-      run: ./gradlew assembleDebug --no-daemon
+    - name: Run Native System Gradle Compiler
+      run: gradle assembleDebug --no-daemon
 
     - name: Convert Workspace to Backup ZIP
       run: |
@@ -277,3 +267,4 @@ jobs:
       with:
         name: Scientist-AI-Source-ZIP
         path: scientist_ai_clean_source.zip
+        
