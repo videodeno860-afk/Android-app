@@ -18,23 +18,17 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Setup Official Gradle Engine
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        gradle-version: '8.4'
-
-    - name: Wipe Cache and Rebuild Fresh Android Structure
+    - name: Wipe and Rebuild Clean Android Structure
       run: |
-        echo "Strictly wiping out all old gradle caches and bad files..."
+        echo "Strictly clearing all caches..."
         rm -rf app build.gradle settings.gradle .gradle
-        rm -rf ~/.gradle/caches/
 
-        echo "Creating fresh directory workspace..."
+        echo "Creating fresh directories..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
 
-        # 1. ROOT GRADLE CONFIGURATION (Forced clean repositories)
+        # 1. ROOT GRADLE CONFIGURATION
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -45,7 +39,7 @@ jobs:
         }
         EOF
 
-        # 2. APP MODULE BUILD GRADLE (Zero conflicting dependencies)
+        # 2. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -67,7 +61,7 @@ jobs:
 
         echo "include ':app'" > settings.gradle
 
-        # 3. RESOURCE STRINGS & SYSTEM THEMES
+        # 3. RESOURCE STRINGS & BASE STYLE
         cat << 'EOF' > app/src/main/res/values/strings.xml
         <resources>
             <string name="app_name">Scientist AI</string>
@@ -82,7 +76,7 @@ jobs:
         </resources>
         EOF
 
-        # 4. ALL SEPARATE CLEAN LAYOUT XML FILES
+        # 4. MASTER LAYOUT XML FILES
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -254,8 +248,13 @@ jobs:
         </manifest>
         EOF
 
-    - name: Run Safe Official Compile Engine
-      run: gradle assembleDebug --no-daemon --stacktrace
+    - name: Setup Official Gradle Engine
+      uses: gradle/actions/setup-gradle@v3
+      with:
+        gradle-version: '8.4'
+
+    - name: Run Clean Official Compile Engine
+      run: gradle clean assembleDebug --no-daemon
 
     - name: Convert Workspace to Backup ZIP
       run: |
