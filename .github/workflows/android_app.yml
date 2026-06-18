@@ -110,7 +110,7 @@ jobs:
         </vector>
         EOF
 
-        cat << 'EOF' > app/src/mipmap-anydpi-v26/ic_launcher.xml
+        cat << 'EOF' > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
         <?xml version="1.0" encoding="utf-8"?>
         <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
             <background android:drawable="@drawable/ic_launcher_background"/>
@@ -249,7 +249,7 @@ jobs:
                 findViewById(R.id.shape_prism).setOnClickListener(v -> { shape = "Prism"; tvLog.setText("Shape: Prism | Color: " + color); });
 
                 findViewById(R.id.color_red).setOnClickListener(v -> { color = "Red"; canvas.setBackgroundColor(0xFFFF1744); tvLog.setText("Shape: " + shape + " | Color: Red"); });
-                findViewById(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); }.getId() == 0 ? findViewById(R.id.color_green) : findViewById(R.id.color_green)).setOnClickListener(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); });
+                findViewById(R.id.color_green).setOnClickListener(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); });
                 findViewById(R.id.color_blue).setOnClickListener(v -> { color = "Blue"; canvas.setBackgroundColor(0xFF2979FF); tvLog.setText("Shape: " + shape + " | Color: Blue"); });
                 findViewById(R.id.color_yellow).setOnClickListener(v -> { color = "Yellow"; canvas.setBackgroundColor(0xFFFFEA00); tvLog.setText("Shape: " + shape + " | Color: Yellow"); });
                 findViewById(R.id.color_white).setOnClickListener(v -> { color = "White"; canvas.setBackgroundColor(0xFFFFFFFF); tvLog.setText("Shape: " + shape + " | Color: White"); });
@@ -352,7 +352,7 @@ jobs:
                 </activity>
                 <activity android:name=".StudioActivity" />
                 <activity android:name=".FeaturesProcessorActivity" />
-            </application>
+            </activity>
         </manifest>
         EOF
 
