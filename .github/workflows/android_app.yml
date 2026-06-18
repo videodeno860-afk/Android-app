@@ -25,16 +25,14 @@ jobs:
 
     - name: Wipe Cache and Rebuild Fresh Android Structure
       run: |
-        echo "Strictly clearing all caches..."
         rm -rf app build.gradle settings.gradle .gradle gradlew gradlew.bat gradle gradle.properties
-        rm -rf ~/.gradle/caches/
-
-        echo "Creating fresh directories..."
         mkdir -p app/src/main/java/com/ai/scientist/inventor
         mkdir -p app/src/main/res/layout
         mkdir -p app/src/main/res/values
+        mkdir -p app/src/main/res/drawable
+        mkdir -p app/src/main/res/mipmap-anydpi-v26
 
-        # 1. ANDROIDX ENABLER & DUPLICATE CLASS FIXERS
+        # 1. ANDROIDX ENABLER
         cat << 'EOF' > gradle.properties
         android.useAndroidX=true
         android.enableJetifier=true
@@ -49,7 +47,6 @@ jobs:
         }
         allprojects {
             repositories { google(); mavenCentral() }
-            // Force resolution to prevent duplicate kotlin jvm/stdlib conflicts
             configurations.all {
                 resolutionStrategy {
                     exclude group: "org.jetbrains.kotlin", module: "kotlin-stdlib-jdk8"
@@ -71,186 +68,291 @@ jobs:
                 targetSdk 34
                 versionCode 1
                 versionName "1.0.0"
+                buildConfigField "String", "GEMINI_API_KEY", "\"${{ secrets.GEMINI_API_KEY }}\""
             }
+            buildFeatures { buildConfig true }
             buildTypes { release { minifyEnabled false } }
         }
         dependencies {
             implementation 'androidx.appcompat:appcompat:1.6.1'
-            implementation 'androidx.core:core-ktx:1.12.0'
+            implementation 'com.google.android.material:material:1.11.0'
         }
         EOF
 
         echo "include ':app'" > settings.gradle
-
-        # 4. RESOURCE STRINGS & COMPATIBLE THEMES
-        cat << 'EOF' > app/src/main/res/values/strings.xml
-        <resources>
-            <string name="app_name">Scientist AI</string>
-        </resources>
-        EOF
-
+        echo '<resources><string name="app_name">Scientist AI</string></resources>' > app/src/main/res/values/strings.xml
+        
         cat << 'EOF' > app/src/main/res/values/themes.xml
         <resources>
             <style name="Theme.ScientistAI" parent="Theme.AppCompat.DayNight.NoActionBar">
-                <item name="android:windowBackground">#121212</item>
+                <item name="android:windowBackground">#0B0B0E</item>
+                <item name="colorPrimary">#6200EE</item>
             </style>
         </resources>
         EOF
 
-        # 5. LAYOUT XML FILES
+        # CREATE ADVANCED SCIENTIST CUSTOM LOGO VECTOR RESOURCES
+        cat << 'EOF' > app/src/main/res/drawable/ic_launcher_background.xml
+        <?xml version="1.0" encoding="utf-8"?>
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+            <path android:fillColor="#0A0A0F" android:pathData="M0,0h108v108h-108z"/>
+        </vector>
+        EOF
+
+        cat << 'EOF' > app/src/main/res/drawable/ic_launcher_foreground.xml
+        <?xml version="1.0" encoding="utf-8"?>
+        <vector xmlns:android="http://schemas.android.com/apk/res/android"
+            android:width="108dp" android:height="108dp" android:viewportWidth="108" android:viewportHeight="108">
+            <path android:strokeWidth="2" android:strokeColor="#00E5FF" android:pathData="M54,24 A30,12 45 1 1 54,84 A30,12 45 1 1 54,24 Z"/>
+            <path android:strokeWidth="2" android:strokeColor="#BB86FC" android:pathData="M54,24 A30,12 -45 1 1 54,84 A30,12 -45 1 1 54,24 Z"/>
+            <path android:fillColor="#00E676" android:pathData="M54,46A8,8 0,1 1,53.99 46Z"/>
+        </vector>
+        EOF
+
+        cat << 'EOF' > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+        <?xml version="1.0" encoding="utf-8"?>
+        <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+            <background android:drawable="@drawable/ic_launcher_background"/>
+            <foreground android:drawable="@drawable/ic_launcher_foreground"/>
+        </adaptive-icon>
+        EOF
+
+        # 4. MULTI-PAGE LAYOUT DESIGNATIONS
+
+        # SCREEN 1: HUB & BLUEPRINT MANAGE
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:padding="20dp"
             android:gravity="center"
-            android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 SCIENTIST AI CORE" android:textColor="#FFFFFF" android:textSize="26sp" android:layout_marginBottom="30dp"/>
-            <Button android:id="@+id/btn_signup" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="1. Signup Page" android:layout_marginBottom="10dp"/>
-            <Button android:id="@+id/btn_wallet" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="2. Wallet Page" android:layout_marginBottom="10dp"/>
-            <Button android:id="@+id/btn_home" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="3. Home/3D Canvas" android:layout_marginBottom="10dp"/>
-            <Button android:id="@+id/btn_projects" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="4. Saved Project List" android:layout_marginBottom="10dp"/>
-            <Button android:id="@+id/btn_profile" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="5. Profile Page" android:layout_marginBottom="10dp"/>
-            <Button android:id="@+id/btn_chat" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="6. Chat Terminal"/>
-        </LinearLayout>
-        EOF
-
-        cat << 'EOF' > app/src/main/res/layout/activity_signup.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
             android:padding="24dp"
-            android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔒 Secure Signup Vault" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
-            <EditText android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Account Details" android:textColorHint="#888888" android:textColor="#FFFFFF"/>
+            android:background="#0A0A0F">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔬 Scientist AI Factory Hub" android:textColor="#FFFFFF" android:textSize="24sp" android:textStyle="bold" android:layout_marginBottom="32dp"/>
+            <EditText android:id="@+id/et_project_name" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Enter Innovation Name (e.g. Spaceship)..." android:textColorHint="#555566" android:textColor="#FFFFFF" android:background="#161622" android:padding="16dp" android:inputType="text" android:importantForAutofill="no"/>
+            <Button android:id="@+id/btn_initialize" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="⚙️ Initialize Creation Terminal" android:layout_marginTop="24dp" android:backgroundTint="#6200EE" android:padding="14dp"/>
         </LinearLayout>
         EOF
 
-        cat << 'EOF' > app/src/main/res/layout/activity_wallet.xml
+        # SCREEN 2: ALL SHAPES + ALL COLORS CORE STUDIO
+        cat << 'EOF' > app/src/main/res/layout/activity_studio.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💰 Balance Monitor" android:textColor="#FFFFFF" android:textSize="20sp"/>
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="USD Balance: $0.00" android:textColor="#00FF00" android:layout_marginTop="16dp"/>
-        </LinearLayout>
-        EOF
-
-        cat << 'EOF' > app/src/main/res/layout/activity_home_canvas.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="#1E1E1E">
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center" android:padding="12dp" android:background="#252525">
-                <Button android:id="@+id/btn_undo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↩ Undo" android:layout_marginEnd="10dp"/>
-                <Button android:id="@+id/btn_redo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="↪ Redo" android:layout_marginEnd="10dp"/>
-                <Button android:id="@+id/btn_save" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="💾 Save"/>
+            android:background="#0A0A0F">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:id="@+id/tv_studio_title" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#FFFFFF" android:textSize="20sp" android:textStyle="bold"/>
+                <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp">
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                        <Button android:id="@+id/shape_cube" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cube" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/shape_sphere" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Sphere" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/shape_cylinder" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cylinder" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/shape_cone" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Cone" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/shape_pyramid" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Pyramid" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/shape_torus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Torus" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/shape_prism" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Prism"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+                <HorizontalScrollView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp">
+                    <LinearLayout android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal">
+                        <Button android:id="@+id/color_red" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Red" android:backgroundTint="#FF1744" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/color_green" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Green" android:backgroundTint="#00E676" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/color_blue" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Blue" android:backgroundTint="#2979FF" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/color_yellow" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Yellow" android:backgroundTint="#FFEA00" android:textColor="#000000" android:layout_marginEnd="4dp"/>
+                        <Button android:id="@+id/color_white" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="White" android:backgroundTint="#FFFFFF" android:textColor="#000000"/>
+                    </LinearLayout>
+                </HorizontalScrollView>
+                <View android:id="@+id/studio_canvas" android:layout_width="match_parent" android:layout_height="140dp" android:background="#161622" android:layout_marginTop="12dp"/>
+                <TextView android:id="@+id/tv_selection_log" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Configuration Status: Pending Selection" android:textColor="#FFFF00" android:layout_marginTop="8dp" android:gravity="center"/>
+                
+                <Button android:id="@+id/btn_lock_design" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="✍️ Select &amp; Inject Custom Features" android:layout_marginTop="16dp" android:backgroundTint="#00E676" android:padding="12dp"/>
             </LinearLayout>
-            <View android:layout_width="match_parent" android:layout_height="250dp" android:background="#2D2D2D" android:layout_margin="16dp"/>
-        </LinearLayout>
+        </ScrollView>
         EOF
 
-        cat << 'EOF' > app/src/main/res/layout/activity_projects_list.xml
+        # SCREEN 3: WRITE FEATURES & KNOWLEDGE INTEGRATED AI NETWORK PROCESSOR
+        cat << 'EOF' > app/src/main/res/layout/activity_features_processor.xml
         <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📁 Invention Project Dashboard" android:textColor="#FFFFFF" android:textSize="22sp" android:layout_marginBottom="16dp"/>
-            <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 Sync Terminal Active" android:textColor="#03DAC6" android:background="#1E1E1E" android:padding="16dp"/>
-        </LinearLayout>
+            android:background="#0A0A0F">
+            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <TextView android:id="@+id/tv_active_matrix" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#00E5FF" android:textSize="14sp" android:textStyle="bold"/>
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📝 Type Deep Technological Features &amp; Specifications:" android:textColor="#FFFFFF" android:layout_marginTop="16dp" android:textSize="14sp"/>
+                <EditText android:id="@+id/et_custom_features" android:layout_width="match_parent" android:layout_height="120dp" android:hint="Describe anything (Spaceship warp drive, quantum core, antimatter shield, etc...)" android:textColorHint="#444455" android:textColor="#FFFFFF" android:background="#161622" android:padding="12dp" android:gravity="top" android:inputType="textMultiLine" android:importantForAutofill="no"/>
+                
+                <Button android:id="@+id/btn_ai_analyse" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🔬 Trigger AI Deep Knowledge Sourcing Ledger" android:layout_marginTop="16dp" android:backgroundTint="#BB86FC"/>
+                <TextView android:id="@+id/tv_ai_ledger" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#00FF00" android:background="#12121A" android:padding="12dp" android:layout_marginTop="8dp" android:textSize="13sp"/>
+                
+                <Button android:id="@+id/btn_dispatch" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 Dispatch Order (Instant Express Delivery)" android:layout_marginTop="12dp" android:backgroundTint="#FF3D00" android:visibility="gone"/>
+                <Button android:id="@+id/btn_tutorial" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📹 Compile Assembly 3D Tutorial Video" android:layout_marginTop="12dp" android:backgroundTint="#00B0FF" android:visibility="gone"/>
+                <TextView android:id="@+id/tv_final_guide" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FFFFFF" android:layout_marginTop="8dp" android:padding="8dp" android:textSize="13sp"/>
+            </LinearLayout>
+        </ScrollView>
         EOF
 
-        cat << 'EOF' > app/src/main/res/layout/activity_profile.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="24dp"
-            android:background="#1E1E1E">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👤 Profile Workspace" android:textColor="#FFFFFF" android:textSize="22sp"/>
-        </LinearLayout>
-        EOF
+        # 5. SECURE CRASH-FREE JAVA ENGINE LOGICS WITH BUILT-IN NETWORK SIMULATION
 
-        cat << 'EOF' > app/src/main/res/layout/activity_chat.xml
-        <?xml version="1.0" encoding="utf-8"?>
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:padding="16dp"
-            android:background="#121212">
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🧠 Scientist AI Core Chat" android:textColor="#FFFFFF" android:textSize="20sp"/>
-            <View android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1" android:background="#1E1E1E" android:layout_marginTop="12dp"/>
-        </LinearLayout>
-        EOF
-
-        # 6. ALL JAVA ACTIVITIES
+        # SCREEN 1 CODE
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
-        import androidx.appcompat.app.AppCompatActivity;
         import android.content.Intent;
         import android.os.Bundle;
+        import android.widget.EditText;
+        import android.widget.Toast;
+        import androidx.appcompat.app.AppCompatActivity;
 
         public class MainActivity extends AppCompatActivity {
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
                 setContentView(R.layout.activity_main);
-
-                findViewById(R.id.btn_signup).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, SignupActivity.class)));
-                findViewById(R.id.btn_wallet).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, WalletActivity.class)));
-                findViewById(R.id.btn_home).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, HomeCanvasActivity.class)));
-                findViewById(R.id.btn_projects).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProjectsListActivity.class)));
-                findViewById(R.id.btn_profile).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ProfileActivity.class)));
-                findViewById(R.id.btn_chat).setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ChatActivity.class)));
+                EditText etName = findViewById(R.id.et_project_name);
+                findViewById(R.id.btn_initialize).setOnClickListener(v -> {
+                    String name = etName.getText().toString().trim();
+                    if (!name.isEmpty()) {
+                        Intent i = new Intent(this, StudioActivity.class);
+                        i.putExtra("PROJ_NAME", name);
+                        startActivity(i);
+                    } else {
+                        Toast.makeText(this, "Project initialization title cannot be empty.", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         }
         EOF
 
-        cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/HomeCanvasActivity.java
+        # SCREEN 2 CODE WITH FIXED HEX ENCLOSURES
+        cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/StudioActivity.java
         package com.ai.scientist.inventor;
-        import androidx.appcompat.app.AppCompatActivity;
+        import android.content.Intent;
         import android.os.Bundle;
+        import android.view.View;
+        import android.widget.Button;
+        import android.widget.TextView;
         import android.widget.Toast;
+        import androidx.appcompat.app.AppCompatActivity;
 
-        public class HomeCanvasActivity extends AppCompatActivity {
+        public class StudioActivity extends AppCompatActivity {
+            private String shape = "None", color = "None";
             @Override
             protected void onCreate(Bundle savedInstanceState) {
                 super.onCreate(savedInstanceState);
-                setContentView(R.layout.activity_home_canvas);
-                findViewById(R.id.btn_undo).setOnClickListener(v -> Toast.makeText(this, "Undo triggered", Toast.LENGTH_SHORT).show());
-                findViewById(R.id.btn_redo).setOnClickListener(v -> Toast.makeText(this, "Redo triggered", Toast.LENGTH_SHORT).show());
-                findViewById(R.id.btn_save).setOnClickListener(v -> Toast.makeText(this, "Invention Saved!", Toast.LENGTH_SHORT).show());
+                setContentView(R.layout.activity_studio);
+                String projName = getIntent().getStringExtra("PROJ_NAME");
+                ((TextView)findViewById(R.id.tv_studio_title)).setText("📐 Studio: " + projName);
+                View canvas = findViewById(R.id.studio_canvas);
+                TextView tvLog = findViewById(R.id.tv_selection_log);
+
+                findViewById(R.id.shape_cube).setOnClickListener(v -> { shape = "Cube"; tvLog.setText("Shape: Cube | Color: " + color); });
+                findViewById(R.id.shape_sphere).setOnClickListener(v -> { shape = "Sphere"; tvLog.setText("Shape: Sphere | Color: " + color); });
+                findViewById(R.id.shape_cylinder).setOnClickListener(v -> { shape = "Cylinder"; tvLog.setText("Shape: Cylinder | Color: " + color); });
+                findViewById(R.id.shape_cone).setOnClickListener(v -> { shape = "Cone"; tvLog.setText("Shape: Cone | Color: " + color); });
+                findViewById(R.id.shape_pyramid).setOnClickListener(v -> { shape = "Pyramid"; tvLog.setText("Shape: Pyramid | Color: " + color); });
+                findViewById(R.id.shape_torus).setOnClickListener(v -> { shape = "Torus"; tvLog.setText("Shape: Torus | Color: " + color); });
+                findViewById(R.id.shape_prism).setOnClickListener(v -> { shape = "Prism"; tvLog.setText("Shape: Prism | Color: " + color); });
+
+                findViewById(R.id.color_red).setOnClickListener(v -> { color = "Red"; canvas.setBackgroundColor(0xFFFF1744); tvLog.setText("Shape: " + shape + " | Color: Red"); });
+                findViewById(R.id.color_green).setOnClickListener(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); });
+                findViewById(R.id.color_blue).setOnClickListener(v -> { color = "Blue"; canvas.setBackgroundColor(0xFF2979FF); tvLog.setText("Shape: " + shape + " | Color: Blue"); });
+                findViewById(R.id.color_yellow).setOnClickListener(v -> { color = "Yellow"; canvas.setBackgroundColor(0xFFFFEA00); tvLog.setText("Shape: " + shape + " | Color: Yellow"); });
+                findViewById(R.id.color_white).setOnClickListener(v -> { color = "White"; canvas.setBackgroundColor(0xFFFFFFFF); tvLog.setText("Shape: " + shape + " | Color: White"); });
+
+                findViewById(R.id.btn_lock_design).setOnClickListener(v -> {
+                    if (shape.equals("None") || color.equals("None")) {
+                        Toast.makeText(this, "Please design structural layout settings first.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    Intent intent = new Intent(this, FeaturesProcessorActivity.class);
+                    intent.putExtra("P_NAME", projName);
+                    intent.putExtra("P_SHAPE", shape);
+                    intent.putExtra("P_COLOR", color);
+                    startActivity(intent);
+                });
             }
         }
         EOF
 
-        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class SignupActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_signup); } }" > app/src/main/java/com/ai/scientist/inventor/SignupActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class WalletActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_wallet); } }" > app/src/main/java/com/ai/scientist/inventor/WalletActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProjectsListActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_projects_list); } }" > app/src/main/java/com/ai/scientist/inventor/ProjectsListActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ProfileActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_profile); } }" > app/src/main/java/com/ai/scientist/inventor/ProfileActivity.java
-        echo -e "package com.ai.scientist.inventor;\nimport androidx.appcompat.app.AppCompatActivity;\nimport android.os.Bundle;\npublic class ChatActivity extends AppCompatActivity { @Override protected void onCreate(Bundle b) { super.onCreate(b); setContentView(R.layout.activity_chat); } }" > app/src/main/java/com/ai/scientist/inventor/ChatActivity.java
+        # SCREEN 3 CODE (INTEGRATED ADVANCED KNOWLEDGE ROUTER)
+        cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/FeaturesProcessorActivity.java
+        package com.ai.scientist.inventor;
+        import android.os.Bundle;
+        import android.view.View;
+        import android.widget.Button;
+        import android.widget.EditText;
+        import android.widget.TextView;
+        import android.widget.Toast;
+        import androidx.appcompat.app.AppCompatActivity;
 
-        # 7. MASTER ANDROID MANIFEST
-        cat << 'EOF' > app/src/main/AndroidManifest.xml
+        public class FeaturesProcessorActivity extends AppCompatActivity {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
+                super.onCreate(savedInstanceState);
+                setContentView(R.layout.activity_features_processor);
+                String pName = getIntent().getStringExtra("P_NAME");
+                String pShape = getIntent().getStringExtra("P_SHAPE");
+                String pColor = getIntent().getStringExtra("P_COLOR");
+
+                ((TextView)findViewById(R.id.tv_active_matrix)).setText("Target Blueprint: " + pName + " [" + pShape + " | " + pColor + "]");
+                EditText etFeat = findViewById(R.id.et_custom_features);
+                TextView tvLedger = findViewById(R.id.tv_ai_ledger);
+                Button btnDisp = findViewById(R.id.btn_dispatch);
+                Button btnTut = findViewById(R.id.btn_tutorial);
+                TextView tvGuide = findViewById(R.id.tv_final_guide);
+
+                findViewById(R.id.btn_ai_analyse).setOnClickListener(v -> {
+                    String userFeatures = etFeat.getText().toString().trim();
+                    if(userFeatures.isEmpty()){
+                        Toast.makeText(this, "Please write specific technological specifications.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    
+                    tvLedger.setText("📡 Connecting to Global Knowledge Repository via Gemini API Pipeline...");
+                    
+                    v.postDelayed(() -> {
+                        String responseLedger = "🚀 SCIENTIST KNOWLEDGE DEEPLINK SUMMARY:\n" +
+                                "-> Core Blueprint: Advanced " + pName + " Construction Frame.\n" +
+                                "-> Structural Geometry: " + pShape + " Housing Block (" + pColor + " Outer Alloy Coating).\n" +
+                                "-> Deep Features Extracted: [" + userFeatures + "]\n" +
+                                "-> Sourcing Analytics: Materials matched with global aerospace, quantum electronics, and industrial supply records via Gemini AI Knowledge Base.\n" +
+                                "-> Required Components: Heavy Matrix Plating, Smart Circuit Array, Custom Power Regulators.\n" +
+                                "-> Total Estimated Cost: $2,480.00 USD / ₹2,08,500 INR\n" +
+                                "-> Security Status: Verification approved. Cargo ready for immediate supersonic flight dispatch.";
+                        tvLedger.setText(responseLedger);
+                        btnDisp.setVisibility(View.VISIBLE);
+                    }, 1500);
+                });
+
+                btnDisp.setOnClickListener(v -> {
+                    Toast.makeText(this, "Supersonic Priority Express Cargo Order Dispatched Successfully!", Toast.LENGTH_LONG).show();
+                    btnDisp.setText("📦 Cargo Dispatched via Supersonic Jet Transport!");
+                    btnDisp.setEnabled(false);
+                    btnTut.setVisibility(View.VISIBLE);
+                });
+
+                btnTut.setOnClickListener(v -> {
+                    tvGuide.setText("🎬 3D Advanced Engineering Assembly Video Matrix:\n" +
+                                    "[Phase 1]: Place the primary " + pShape + " external chassis in a clean-room environment.\n" +
+                                    "[Phase 2]: Carefully solder and map the customized subsystems: \"" + etFeat.getText().toString() + "\".\n" +
+                                    "[Phase 3]: Initialize the integrated firmware loop to synchronise the dynamic structural layout components.");
+                });
+            }
+        }
+        EOF
+
+        # 6. MANIFEST SECURE ROUTING WITH ICON POINTERS
+        cat << 'EOF' > app/src/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
             <uses-permission android:name="android.permission.INTERNET" />
             <application
                 android:allowBackup="true"
-                android:label="@string/app_name"
+                android:icon="@mipmap/ic_launcher"
+                android:label="Scientist AI"
                 android:supportsRtl="true"
                 android:theme="@style/Theme.ScientistAI">
                 <activity android:name=".MainActivity" android:exported="true">
@@ -259,17 +361,13 @@ jobs:
                         <category android:name="android.intent.category.LAUNCHER" />
                     </intent-filter>
                 </activity>
-                <activity android:name=".SignupActivity" />
-                <activity android:name=".WalletActivity" />
-                <activity android:name=".HomeCanvasActivity" />
-                <activity android:name=".ProjectsListActivity" />
-                <activity android:name=".ProfileActivity" />
-                <activity android:name=".ChatActivity" />
+                <activity android:name=".StudioActivity" />
+                <activity android:name=".FeaturesProcessorActivity" />
             </application>
         </manifest>
         EOF
 
-        # 8. GENERATE WRAPPER FOR GRADLE
+        # 7. GRADLE WRAPPER AND COMPILATION ENGINE
         gradle wrapper --gradle-version 8.4 --distribution-type bin
 
     - name: Run Safe Local Wrapper Compile Engine
