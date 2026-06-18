@@ -23,7 +23,7 @@ jobs:
       with:
         gradle-version: '8.4'
 
-    - name: Wipe Cache and Rebuild Fresh Android Structure
+    - name: Initialize Directory Structure
       run: |
         rm -rf app build.gradle settings.gradle .gradle gradlew gradlew.bat gradle gradle.properties
         mkdir -p app/src/main/java/com/ai/scientist/inventor
@@ -32,14 +32,14 @@ jobs:
         mkdir -p app/src/main/res/drawable
         mkdir -p app/src/main/res/mipmap-anydpi-v26
 
-        # 1. ANDROIDX ENABLER
+    - name: Configure Gradle Build Settings
+      run: |
         cat << 'EOF' > gradle.properties
         android.useAndroidX=true
         android.enableJetifier=true
         org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
         EOF
 
-        # 2. ROOT GRADLE CONFIGURATION
         cat << 'EOF' > build.gradle
         buildscript {
             repositories { google(); mavenCentral() }
@@ -56,7 +56,6 @@ jobs:
         }
         EOF
 
-        # 3. APP MODULE BUILD GRADLE
         cat << 'EOF' > app/build.gradle
         plugins { id 'com.android.application' }
         android {
@@ -91,7 +90,8 @@ jobs:
         </resources>
         EOF
 
-        # CREATE ADVANCED SCIENTIST CUSTOM LOGO VECTOR RESOURCES
+    - name: Create Premium Vector Logos
+      run: |
         cat << 'EOF' > app/src/main/res/drawable/ic_launcher_background.xml
         <?xml version="1.0" encoding="utf-8"?>
         <vector xmlns:android="http://schemas.android.com/apk/res/android"
@@ -110,7 +110,7 @@ jobs:
         </vector>
         EOF
 
-        cat << 'EOF' > app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+        cat << 'EOF' > app/src/mipmap-anydpi-v26/ic_launcher.xml
         <?xml version="1.0" encoding="utf-8"?>
         <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
             <background android:drawable="@drawable/ic_launcher_background"/>
@@ -118,9 +118,8 @@ jobs:
         </adaptive-icon>
         EOF
 
-        # 4. MULTI-PAGE LAYOUT DESIGNATIONS
-
-        # SCREEN 1: HUB & BLUEPRINT MANAGE
+    - name: Build Activity Layouts
+      run: |
         cat << 'EOF' > app/src/main/res/layout/activity_main.xml
         <?xml version="1.0" encoding="utf-8"?>
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -136,7 +135,6 @@ jobs:
         </LinearLayout>
         EOF
 
-        # SCREEN 2: ALL SHAPES + ALL COLORS CORE STUDIO
         cat << 'EOF' > app/src/main/res/layout/activity_studio.xml
         <?xml version="1.0" encoding="utf-8"?>
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -167,13 +165,11 @@ jobs:
                 </HorizontalScrollView>
                 <View android:id="@+id/studio_canvas" android:layout_width="match_parent" android:layout_height="140dp" android:background="#161622" android:layout_marginTop="12dp"/>
                 <TextView android:id="@+id/tv_selection_log" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Configuration Status: Pending Selection" android:textColor="#FFFF00" android:layout_marginTop="8dp" android:gravity="center"/>
-                
                 <Button android:id="@+id/btn_lock_design" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="✍️ Select &amp; Inject Custom Features" android:layout_marginTop="16dp" android:backgroundTint="#00E676" android:padding="12dp"/>
             </LinearLayout>
         </ScrollView>
         EOF
 
-        # SCREEN 3: WRITE FEATURES & KNOWLEDGE INTEGRATED AI NETWORK PROCESSOR
         cat << 'EOF' > app/src/main/res/layout/activity_features_processor.xml
         <?xml version="1.0" encoding="utf-8"?>
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
@@ -184,10 +180,8 @@ jobs:
                 <TextView android:id="@+id/tv_active_matrix" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#00E5FF" android:textSize="14sp" android:textStyle="bold"/>
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="📝 Type Deep Technological Features &amp; Specifications:" android:textColor="#FFFFFF" android:layout_marginTop="16dp" android:textSize="14sp"/>
                 <EditText android:id="@+id/et_custom_features" android:layout_width="match_parent" android:layout_height="120dp" android:hint="Describe anything (Spaceship warp drive, quantum core, antimatter shield, etc...)" android:textColorHint="#444455" android:textColor="#FFFFFF" android:background="#161622" android:padding="12dp" android:gravity="top" android:inputType="textMultiLine" android:importantForAutofill="no"/>
-                
                 <Button android:id="@+id/btn_ai_analyse" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🔬 Trigger AI Deep Knowledge Sourcing Ledger" android:layout_marginTop="16dp" android:backgroundTint="#BB86FC"/>
                 <TextView android:id="@+id/tv_ai_ledger" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#00FF00" android:background="#12121A" android:padding="12dp" android:layout_marginTop="8dp" android:textSize="13sp"/>
-                
                 <Button android:id="@+id/btn_dispatch" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="🚀 Dispatch Order (Instant Express Delivery)" android:layout_marginTop="12dp" android:backgroundTint="#FF3D00" android:visibility="gone"/>
                 <Button android:id="@+id/btn_tutorial" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="📹 Compile Assembly 3D Tutorial Video" android:layout_marginTop="12dp" android:backgroundTint="#00B0FF" android:visibility="gone"/>
                 <TextView android:id="@+id/tv_final_guide" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#FFFFFF" android:layout_marginTop="8dp" android:padding="8dp" android:textSize="13sp"/>
@@ -195,9 +189,8 @@ jobs:
         </ScrollView>
         EOF
 
-        # 5. SECURE CRASH-FREE JAVA ENGINE LOGICS WITH BUILT-IN NETWORK SIMULATION
-
-        # SCREEN 1 CODE
+    - name: Write Java Engine Classes
+      run: |
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/MainActivity.java
         package com.ai.scientist.inventor;
         import android.content.Intent;
@@ -226,7 +219,6 @@ jobs:
         }
         EOF
 
-        # SCREEN 2 CODE WITH FIXED HEX ENCLOSURES
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/StudioActivity.java
         package com.ai.scientist.inventor;
         import android.content.Intent;
@@ -257,7 +249,7 @@ jobs:
                 findViewById(R.id.shape_prism).setOnClickListener(v -> { shape = "Prism"; tvLog.setText("Shape: Prism | Color: " + color); });
 
                 findViewById(R.id.color_red).setOnClickListener(v -> { color = "Red"; canvas.setBackgroundColor(0xFFFF1744); tvLog.setText("Shape: " + shape + " | Color: Red"); });
-                findViewById(R.id.color_green).setOnClickListener(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); });
+                findViewById(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); }.getId() == 0 ? findViewById(R.id.color_green) : findViewById(R.id.color_green)).setOnClickListener(v -> { color = "Green"; canvas.setBackgroundColor(0xFF00E676); tvLog.setText("Shape: " + shape + " | Color: Green"); });
                 findViewById(R.id.color_blue).setOnClickListener(v -> { color = "Blue"; canvas.setBackgroundColor(0xFF2979FF); tvLog.setText("Shape: " + shape + " | Color: Blue"); });
                 findViewById(R.id.color_yellow).setOnClickListener(v -> { color = "Yellow"; canvas.setBackgroundColor(0xFFFFEA00); tvLog.setText("Shape: " + shape + " | Color: Yellow"); });
                 findViewById(R.id.color_white).setOnClickListener(v -> { color = "White"; canvas.setBackgroundColor(0xFFFFFFFF); tvLog.setText("Shape: " + shape + " | Color: White"); });
@@ -277,7 +269,6 @@ jobs:
         }
         EOF
 
-        # SCREEN 3 CODE (INTEGRATED ADVANCED KNOWLEDGE ROUTER)
         cat << 'EOF' > app/src/main/java/com/ai/scientist/inventor/FeaturesProcessorActivity.java
         package com.ai.scientist.inventor;
         import android.os.Bundle;
@@ -310,41 +301,39 @@ jobs:
                         Toast.makeText(this, "Please write specific technological specifications.", Toast.LENGTH_SHORT).show();
                         return;
                     }
-                    
                     tvLedger.setText("📡 Connecting to Global Knowledge Repository via Gemini API Pipeline...");
-                    
                     v.postDelayed(() -> {
                         String responseLedger = "🚀 SCIENTIST KNOWLEDGE DEEPLINK SUMMARY:\n" +
                                 "-> Core Blueprint: Advanced " + pName + " Construction Frame.\n" +
                                 "-> Structural Geometry: " + pShape + " Housing Block (" + pColor + " Outer Alloy Coating).\n" +
                                 "-> Deep Features Extracted: [" + userFeatures + "]\n" +
-                                "-> Sourcing Analytics: Materials matched with global aerospace, quantum electronics, and industrial supply records via Gemini AI Knowledge Base.\n" +
-                                "-> Required Components: Heavy Matrix Plating, Smart Circuit Array, Custom Power Regulators.\n" +
+                                "-> Sourcing Analytics: Materials matched with global aerospace records.\n" +
+                                "-> Required Components: Heavy Matrix Plating, Smart Circuit Array.\n" +
                                 "-> Total Estimated Cost: $2,480.00 USD / ₹2,08,500 INR\n" +
-                                "-> Security Status: Verification approved. Cargo ready for immediate supersonic flight dispatch.";
+                                "-> Security Status: Verification approved.";
                         tvLedger.setText(responseLedger);
                         btnDisp.setVisibility(View.VISIBLE);
                     }, 1500);
                 });
 
                 btnDisp.setOnClickListener(v -> {
-                    Toast.makeText(this, "Supersonic Priority Express Cargo Order Dispatched Successfully!", Toast.LENGTH_LONG).show();
-                    btnDisp.setText("📦 Cargo Dispatched via Supersonic Jet Transport!");
+                    Toast.makeText(this, "Supersonic Priority Express Cargo Order Dispatched!", Toast.LENGTH_LONG).show();
+                    btnDisp.setText("📦 Cargo Dispatched!");
                     btnDisp.setEnabled(false);
                     btnTut.setVisibility(View.VISIBLE);
                 });
 
                 btnTut.setOnClickListener(v -> {
                     tvGuide.setText("🎬 3D Advanced Engineering Assembly Video Matrix:\n" +
-                                    "[Phase 1]: Place the primary " + pShape + " external chassis in a clean-room environment.\n" +
-                                    "[Phase 2]: Carefully solder and map the customized subsystems: \"" + etFeat.getText().toString() + "\".\n" +
-                                    "[Phase 3]: Initialize the integrated firmware loop to synchronise the dynamic structural layout components.");
+                                    "[Phase 1]: Place the primary " + pShape + " external chassis.\n" +
+                                    "[Phase 2]: Carefully solder customized subsystems: \"" + etFeat.getText().toString() + "\".");
                 });
             }
         }
         EOF
 
-        # 6. MANIFEST SECURE ROUTING WITH ICON POINTERS
+    - name: Setup Final Manifest and Environment
+      run: |
         cat << 'EOF' > app/src/AndroidManifest.xml
         <?xml version="1.0" encoding="utf-8"?>
         <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -367,7 +356,6 @@ jobs:
         </manifest>
         EOF
 
-        # 7. GRADLE WRAPPER AND COMPILATION ENGINE
         gradle wrapper --gradle-version 8.4 --distribution-type bin
 
     - name: Run Safe Local Wrapper Compile Engine
