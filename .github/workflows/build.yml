@@ -6,27 +6,30 @@ jobs:
   build-native-apk:
     runs-on: ubuntu-latest
     steps:
-      - name: 1. Checkout Repository
+      - name: 1. Checkout Repository Codebase
         uses: actions/checkout@v4
 
-      - name: 2. Setup JDK 17 Core Environment
+      - name: 2. Setup JDK 17 Environment Standard
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 3. Setup Android SDK Toolchain
+      - name: 3. Setup Complete Android SDK Toolchain
         uses: android-actions/setup-android@v3
 
-      - name: 4. Build Fixed Directory Structure From Scratch
+      - name: 4. Build Complete Isolated Project Architecture From Scratch
         run: |
-          rm -rf app build.gradle settings.gradle gradlew gradle
+          # Pehle ka saara purana kachra aur corrupt cache delete
+          rm -rf app build.gradle settings.gradle gradlew gradle .gradle
+          
+          # Naye clean folder structure banana
           mkdir -p app/src/main/java/com/scientist/ai
           mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
           mkdir -p gradle/wrapper
 
-          # 100% Fixed settings.gradle with Plugin Repositories
+          # A. Perfect Root settings.gradle Configuration
           cat << 'EOF' > settings.gradle
           pluginManagement {
               repositories {
@@ -45,18 +48,29 @@ jobs:
           include ':app'
           EOF
 
-          # Clean Root build.gradle
+          # B. Rock-Solid Root build.gradle Configuration
           cat << 'EOF' > build.gradle
-          plugins {
-              id 'com.android.application' version '8.0.0' apply false
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.0.2'
+              }
+          }
+          allprojects {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
           }
           EOF
 
-          # Fixed app/build.gradle
+          # C. Safe App-Level app/build.gradle Configuration
           cat << 'EOF' > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
+          apply plugin: 'com.android.application'
+
           android {
               namespace 'com.scientist.ai'
               compileSdk 33
@@ -73,6 +87,7 @@ jobs:
                   }
               }
           }
+
           dependencies {
               implementation 'androidx.appcompat:appcompat:1.6.1'
               implementation 'com.google.android.material:material:1.9.0'
@@ -80,7 +95,7 @@ jobs:
           }
           EOF
 
-      - name: 5. Inject Clean Java Blueprint (MainActivity.java)
+      - name: 5. Inject Full Native Core Logic (MainActivity.java)
         run: |
           cat << 'EOF' > app/src/main/java/com/scientist/ai/MainActivity.java
           package com.scientist.ai;
@@ -232,11 +247,11 @@ jobs:
           }
           EOF
 
-      - name: 6. Inject Live API Key Environment Variable Securely
+      - name: 6. Inject Live Secret Variable Securely (Bypasses Local Leaks)
         run: |
           sed -i "s/SECRET_KEY_PLACEHOLDER/${{ secrets.GEMINI_API_KEY }}/g" app/src/main/java/com/scientist/ai/MainActivity.java
 
-      - name: 7. Inject AndroidManifest Configuration File
+      - name: 7. Inject Core AndroidManifest Access File
         run: |
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.scientist.ai">
@@ -252,19 +267,30 @@ jobs:
           </manifest>
           EOF
 
-      - name: 8. Initialize Local Clean Gradle Wrapper
+      - name: 8. Inject Standalone Wrapper Config (Bypasses Server Glitches)
         run: |
-          cd $GITHUB_WORKSPACE
-          gradle wrapper --gradle-version 8.0
+          # Is baar hum server ka global wrapper command chalayenge hi nahi! Direct clean internal properties file write karenge.
+          cat << 'EOF' > gradle/wrapper/gradle-wrapper.properties
+          distributionBase=GRADLE_USER_HOME
+          distributionPath=wrapper/dists
+          distributionUrl=https\://services.gradle.org/distributions/gradle-8.0.2-bin.zip
+          zipStoreBase=GRADLE_USER_HOME
+          zipStorePath=wrapper/dists
+          EOF
 
-      - name: 9. Execute Production Clean Native Compilation Matrix
+      - name: 9. Setup Native Isolated Gradle Build Action Runner
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.0.2
+
+      - name: 10. Execute Final Matrix Production Build
         run: |
-          chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          # Standalone environment system ko trigger karna bina kisi daemon collision ke
+          gradle assembleDebug --no-daemon
 
-      - name: 10. Deliver Verified Native Artifact APK to Actions Dashboard
+      - name: 11. Deliver Final Real Verified APK to Action Dashboard
         uses: actions/upload-artifact@v4
         with:
-          name: Scientist_AI_Production_Package
+          name: Scientist_AI_Final_Package
           path: app/build/outputs/apk/debug/app-debug.apk
           
