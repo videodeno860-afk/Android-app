@@ -47,24 +47,21 @@ jobs:
 
           # B. Clean Root build.gradle
           cat << 'EOF' > build.gradle
-          buildscript {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath 'com.android.tools.build:gradle:8.0.2'
-              }
+          plugins {
+              id 'com.android.application' version '8.0.2' apply false
           }
           EOF
 
-          # C. Secure app/build.gradle with automatic BuildConfig Injection
+          # C. Ultra-Compatible app/build.gradle (Fixed dependencies to avoid strict sync crashes)
           cat << 'EOF' > app/build.gradle
-          apply plugin: 'com.android.application'
+          plugins {
+              id 'com.android.application'
+          }
 
           android {
               namespace 'com.scientist.ai'
               compileSdk 33
+              
               defaultConfig {
                   applicationId "com.scientist.ai"
                   minSdk 24
@@ -72,12 +69,13 @@ jobs:
                   versionCode 1
                   versionName "1.0"
                   
-                  // Automatically and safely injects the API key from environment without text corruption
                   buildConfigField "String", "GEMINI_API_KEY", "\"${System.getenv("SAFE_GEMINI_KEY") ?: "MOCK_KEY"}\""
               }
+              
               buildFeatures {
                   buildConfig true
               }
+              
               buildTypes {
                   release {
                       minifyEnabled false
@@ -87,7 +85,7 @@ jobs:
 
           dependencies {
               implementation 'androidx.appcompat:appcompat:1.6.1'
-              implementation 'com.google.android.material:material:1.9.0'
+              implementation 'com.google.android.material:material:1.8.0'
               implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
           }
           EOF
@@ -244,13 +242,13 @@ jobs:
           }
           EOF
 
-      - name: 6. Inject Core AndroidManifest Access File
+      - name: 6. Inject Clean AndroidManifest File (Removed package name conflict)
         run: |
           cat << 'EOF' > app/src/main/AndroidManifest.xml
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.scientist.ai">
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <uses-permission android:name="android.permission.INTERNET" />
               <application android:allowBackup="true" android:label="Scientist AI" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
-                  <activity android:name=".MainActivity" android:exported="true">
+                  <activity android:name="com.scientist.ai.MainActivity" android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
@@ -260,7 +258,7 @@ jobs:
           </manifest>
           EOF
 
-      - name: 7. Inject Standalone Wrapper Config
+      - name: 7. Force Standalone Wrapper Configuration File
         run: |
           cat << 'EOF' > gradle/wrapper/gradle-wrapper.properties
           distributionBase=GRADLE_USER_HOME
@@ -270,18 +268,18 @@ jobs:
           zipStorePath=wrapper/dists
           EOF
 
-      - name: 8. Setup Native Isolated Gradle Build Action Runner
+      - name: 8. Setup Isolated Gradle System Runner Action
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.0.2
 
-      - name: 9. Execute Final Matrix Production Build
+      - name: 9. Execute Absolute Protected Compilation Pipeline
         env:
           SAFE_GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           gradle assembleDebug --no-daemon
 
-      - name: 10. Deliver Final Real Verified APK to Action Dashboard
+      - name: 10. Deliver Real Validated Native Artifact APK
         uses: actions/upload-artifact@v4
         with:
           name: Scientist_AI_Final_Package
