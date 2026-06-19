@@ -9,44 +9,61 @@ jobs:
       - name: 1. Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 2. Setup JDK 17 (Android Engine Core)
+      - name: 2. Setup JDK 17 Core Environment
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 3. Setup Android SDK
+      - name: 3. Setup Android SDK Toolchain
         uses: android-actions/setup-android@v3
 
-      - name: 4. Automate Directory And Architecture Structure
+      - name: 4. Build Fixed Directory Structure From Scratch
         run: |
+          rm -rf app build.gradle settings.gradle gradlew gradle
           mkdir -p app/src/main/java/com/scientist/ai
           mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
           mkdir -p gradle/wrapper
 
-          # Fixed root build.gradle with correct plugins syntax
+          # 100% Fixed settings.gradle with Plugin Repositories
+          cat << 'EOF' > settings.gradle
+          pluginManagement {
+              repositories {
+                  google()
+                  mavenCentral()
+                  gradlePluginPortal()
+              }
+          }
+          dependencyResolutionManagement {
+              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+          }
+          include ':app'
+          EOF
+
+          # Clean Root build.gradle
           cat << 'EOF' > build.gradle
           plugins {
-              id 'com.android.application' version '8.1.1' apply false
-              id 'com.android.library' version '8.1.1' apply false
+              id 'com.android.application' version '8.0.0' apply false
           }
           EOF
 
-          echo "include ':app'" > settings.gradle
-
-          # Fixed app level build.gradle matching modern gradle specs
+          # Fixed app/build.gradle
           cat << 'EOF' > app/build.gradle
           plugins {
               id 'com.android.application'
           }
           android {
               namespace 'com.scientist.ai'
-              compileSdk 34
+              compileSdk 33
               defaultConfig {
                   applicationId "com.scientist.ai"
                   minSdk 24
-                  targetSdk 34
+                  targetSdk 33
                   versionCode 1
                   versionName "1.0"
               }
@@ -63,11 +80,9 @@ jobs:
           }
           EOF
 
-      - name: 5. Inject Complete Functional Core Logic (MainActivity.java)
-        env:
-          SECRET_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      - name: 5. Inject Clean Java Blueprint (MainActivity.java)
         run: |
-          cat << EOF > app/src/main/java/com/scientist/ai/MainActivity.java
+          cat << 'EOF' > app/src/main/java/com/scientist/ai/MainActivity.java
           package com.scientist.ai;
 
           import android.os.Bundle;
@@ -88,7 +103,7 @@ jobs:
           public class MainActivity extends AppCompatActivity {
               private EditText terminalInput;
               private TextView matrixLog, chatDisplay, walletDisplay;
-              private String GEMINI_API_KEY = "$SECRET_API_KEY"; 
+              private String GEMINI_API_KEY = "SECRET_KEY_PLACEHOLDER"; 
 
               @Override
               protected void onCreate(Bundle savedInstanceState) {
@@ -175,7 +190,7 @@ jobs:
                                       conn.setRequestProperty("Content-Type", "application/json");
                                       conn.setDoOutput(true);
 
-                                      String systemPrompt = "You are Scientist AI. You have the knowledge of all books in the world. Analyze this design step-by-step, explain what parts are needed, and how to assemble it fast: " + query;
+                                      String systemPrompt = "You are Scientist AI. Answer this technical query: " + query;
                                       String jsonBody = "{\"contents\": [{\"parts\":[{\"text\":\"" + systemPrompt + "\"}]}]}";
                                       
                                       OutputStream os = conn.getOutputStream();
@@ -201,7 +216,7 @@ jobs:
                                       runOnUiThread(new Runnable() {
                                           @Override
                                           public void run() {
-                                              chatDisplay.append("AI: Secret Key processing error. Ensure GEMINI_API_KEY is defined in GitHub Secrets.\n\n");
+                                              chatDisplay.append("AI: API Configuration Check Needed.\n\n");
                                               matrixLog.setText("⚠️ LINK ARCHITECTURE DISCONNECTED");
                                           }
                                       });
@@ -217,7 +232,11 @@ jobs:
           }
           EOF
 
-      - name: 6. Inject Manifest Assets and Layout Definitions
+      - name: 6. Inject Live API Key Environment Variable Securely
+        run: |
+          sed -i "s/SECRET_KEY_PLACEHOLDER/${{ secrets.GEMINI_API_KEY }}/g" app/src/main/java/com/scientist/ai/MainActivity.java
+
+      - name: 7. Inject AndroidManifest Configuration File
         run: |
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.scientist.ai">
@@ -233,17 +252,19 @@ jobs:
           </manifest>
           EOF
 
-      - name: 7. Enforce Controlled Gradle Wrapper Version (Fixes Crash)
+      - name: 8. Initialize Local Clean Gradle Wrapper
         run: |
+          cd $GITHUB_WORKSPACE
           gradle wrapper --gradle-version 8.0
 
-      - name: 8. Run Compilation Matrix For Production APK
+      - name: 9. Execute Production Clean Native Compilation Matrix
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug --no-daemon
 
-      - name: 9. Deliver Native Artifact APK to Actions Dashboard
+      - name: 10. Deliver Verified Native Artifact APK to Actions Dashboard
         uses: actions/upload-artifact@v4
         with:
           name: Scientist_AI_Production_Package
           path: app/build/outputs/apk/debug/app-debug.apk
+          
