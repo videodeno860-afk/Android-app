@@ -20,16 +20,15 @@ jobs:
 
       - name: 4. Build Complete Isolated Project Architecture From Scratch
         run: |
-          # Sabse pehle root directory ke andar se saara purana data clear karna
-          rm -rf app build.gradle settings.gradle gradlew gradle .gradle
+          # Puraani corrupt cache aur settings ko bilkul dho dena
+          rm -rf app build.gradle settings.gradle gradlew gradlew.bat gradle .gradle
           
-          # Naye fresh folders generate karna
+          # Naye resource aur directory blocks taiyar karna
           mkdir -p app/src/main/java/com/scientist/ai
-          mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
           mkdir -p gradle/wrapper
 
-          # A. Perfect settings.gradle
+          # A. Super Smooth settings.gradle (Removed Strict FAIL_ON_PROJECT_REPOS)
           cat << 'EOF' > settings.gradle
           pluginManagement {
               repositories {
@@ -38,28 +37,31 @@ jobs:
                   gradlePluginPortal()
               }
           }
-          dependencyResolutionManagement {
-              repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+          include ':app'
+          EOF
+
+          # B. Standard Legacy Root build.gradle (Universal support pattern)
+          cat << 'EOF' > build.gradle
+          buildscript {
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath 'com.android.tools.build:gradle:8.0.2'
+              }
+          }
+          allprojects {
               repositories {
                   google()
                   mavenCentral()
               }
           }
-          include ':app'
-          EOF
-
-          # B. Clean Root build.gradle
-          cat << 'EOF' > build.gradle
-          plugins {
-              id 'com.android.application' version '8.0.2' apply false
-          }
           EOF
 
           # C. Ultra-Compatible app/build.gradle
           cat << 'EOF' > app/build.gradle
-          plugins {
-              id 'com.android.application'
-          }
+          apply plugin: 'com.android.application'
 
           android {
               namespace 'com.scientist.ai'
@@ -245,7 +247,19 @@ jobs:
           }
           EOF
 
-      - name: 6. Inject Clean AndroidManifest File
+      - name: 6. Inject Base Styles XML Layout Mapping
+        run: |
+          cat << 'EOF' > app/src/main/res/values/styles.xml
+          <resources>
+              <style name="Theme.MaterialComponents.DayNight.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
+                  <item name="colorPrimary">#0055FF</item>
+                  <item name="colorPrimaryDark">#02060C</item>
+                  <item name="colorAccent">#00FFFF</item>
+              </style>
+          </resources>
+          EOF
+
+      - name: 7. Inject Clean AndroidManifest File
         run: |
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
@@ -261,7 +275,7 @@ jobs:
           </manifest>
           EOF
 
-      - name: 7. Force Standalone Wrapper Configuration File
+      - name: 8. Force Standalone Wrapper Configuration File
         run: |
           cat << 'EOF' > gradle/wrapper/gradle-wrapper.properties
           distributionBase=GRADLE_USER_HOME
@@ -271,19 +285,19 @@ jobs:
           zipStorePath=wrapper/dists
           EOF
 
-      - name: 8. Setup Isolated Gradle System Runner Action
+      - name: 9. Setup Isolated Gradle System Runner Action
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: 8.0.2
 
-      - name: 9. Execute Absolute Protected Compilation Pipeline
+      - name: 10. Execute Absolute Protected Compilation Pipeline
         env:
           SAFE_GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # Purani compile cache saaf karke chalana
+          # Pure clean system trigger bina dependency blockage ke
           gradle clean assembleDebug --no-daemon
 
-      - name: 10. Deliver Real Validated Native Artifact APK
+      - name: 11. Deliver Real Validated Native Artifact APK
         uses: actions/upload-artifact@v4
         with:
           name: Scientist_AI_Final_Package
