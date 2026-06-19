@@ -1,0 +1,250 @@
+name: Scientist AI Native Blueprint Engine
+
+on: [push]
+
+jobs:
+  build-native-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 1. Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: 2. Setup JDK 17 (Android Engine Core)
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: 3. Automate Directory And Architecture Structure
+        run: |
+          mkdir -p app/src/main/java/com/scientist/ai
+          mkdir -p app/src/main/res/layout
+          mkdir -p app/src/main/res/values
+          mkdir -p gradle/wrapper
+
+          # Build root project definitions
+          cat << 'EOF' > build.gradle
+          buildscript {
+              repositories { google(); mavenCentral() }
+              dependencies { classpath 'com.android.tools.build:gradle:8.1.1' }
+          }
+          allprojects {
+              repositories { google(); mavenCentral() }
+          }
+          EOF
+
+          echo "include ':app'" > settings.gradle
+
+          # App level production architecture setup
+          cat << 'EOF' > app/build.gradle
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.scientist.ai'
+              compileSdk 34
+              defaultConfig {
+                  applicationId "com.scientist.ai"
+                  minSdk 24
+                  targetSdk 34
+                  versionCode 1
+                  versionName "1.0"
+              }
+          }
+          dependencies {
+              implementation 'androidx.appcompat:appcompat:1.6.1'
+              implementation 'com.google.android.material:material:1.9.0'
+              implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+          }
+          EOF
+
+      - name: 4. Inject Complete Functional Core Logic (MainActivity.java)
+        env:
+          # GitHub Actions ki secrets library se API Key auto fetch ho rahi hai
+          SECRET_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          cat << EOF > app/src/main/java/com/scientist/ai/MainActivity.java
+          package com.scientist.ai;
+
+          import android.os.Bundle;
+          import android.view.View;
+          import android.widget.Button;
+          import android.widget.EditText;
+          import android.widget.LinearLayout;
+          import android.widget.ScrollView;
+          import android.widget.TextView;
+          import android.widget.Toast;
+          import androidx.appcompat.app.AppCompatActivity;
+          import java.io.BufferedReader;
+          import java.io.InputStreamReader;
+          import java.io.OutputStream;
+          import java.net.HttpURLConnection;
+          import java.net.URL;
+          import org.json.JSONObject;
+
+          public class MainActivity extends AppCompatActivity {
+              private EditText terminalInput;
+              private TextView matrixLog, chatDisplay, walletDisplay;
+              private String GEMINI_API_KEY = "$SECRET_API_KEY"; 
+
+              @Override
+              protected void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  
+                  LinearLayout root = new LinearLayout(this);
+                  root.setOrientation(LinearLayout.VERTICAL);
+                  root.setBackgroundColor(android.graphics.Color.parseColor("#02060C"));
+                  root.setPadding(30, 50, 30, 30);
+
+                  // 1. Header & Identity Section
+                  TextView title = new TextView(this);
+                  title.setText("⚛️ SCIENTIST AI - COGNITIVE FACTORY");
+                  title.setTextColor(android.graphics.Color.parseColor("#00FFFF"));
+                  title.setTextSize(18);
+                  title.setGravity(android.view.Gravity.CENTER);
+                  root.addView(title);
+
+                  // 2. 3D Canvas Matrix & Deep Micro-Analysis Display
+                  TextView canvasHeader = new TextView(this);
+                  canvasHeader.setText("\n🛰️ 3D SHAPES MATRIX CANVAS");
+                  canvasHeader.setTextColor(android.graphics.Color.parseColor("#00FFFF"));
+                  root.addView(canvasHeader);
+
+                  matrixLog = new TextView(this);
+                  matrixLog.setText("[ MATRIX MODE ACTIVE ]\nKnowledge Base Loaded: Ask AI to break parts or write formulas.");
+                  matrixLog.setTextColor(android.graphics.Color.parseColor("#88A3C7"));
+                  matrixLog.setBackgroundColor(android.graphics.Color.parseColor("#010A15"));
+                  matrixLog.setPadding(20, 20, 20, 20);
+                  root.addView(matrixLog);
+
+                  // 3. Dual-Currency Wallet Section (Notes Page 2)
+                  TextView walletHeader = new TextView(this);
+                  walletHeader.setText("\n💳 SECURE TRANSACTION WALLET");
+                  walletHeader.setTextColor(android.graphics.Color.parseColor("#FFFF00"));
+                  root.addView(walletHeader);
+
+                  walletDisplay = new TextView(this);
+                  walletDisplay.setText("Balance: $1,250 | ₹1,02,500 INR\nStatus: Lifetime Passive Revenue Verified");
+                  walletDisplay.setTextColor(android.graphics.Color.parseColor("#FFFF00"));
+                  walletDisplay.setBackgroundColor(android.graphics.Color.parseColor("#07111E"));
+                  walletDisplay.setPadding(20, 20, 20, 20);
+                  root.addView(walletDisplay);
+
+                  // 4. Live Chat Co-Pilot Interface (Notes Page 6)
+                  TextView chatHeader = new TextView(this);
+                  chatHeader.setText("\n💬 SCIENTIST KNOWLEDGE PANEL");
+                  chatHeader.setTextColor(android.graphics.Color.parseColor("#39FF14"));
+                  root.addView(chatHeader);
+
+                  ScrollView scroller = new ScrollView(this);
+                  chatDisplay = new TextView(this);
+                  chatDisplay.setText("AI: I possess knowledge of books worldwide. Input your design framework or query.\n\n");
+                  chatDisplay.setTextColor(android.graphics.Color.parseColor("#39FF14"));
+                  chatDisplay.setBackgroundColor(android.graphics.Color.parseColor("#010A15"));
+                  chatDisplay.setPadding(20, 20, 20, 20);
+                  scroller.addView(chatDisplay);
+                  root.addView(scroller);
+
+                  // 5. Terminal Control Console
+                  terminalInput = new EditText(this);
+                  terminalInput.setHint("Enter shapes info, logic or question...");
+                  terminalInput.setHintTextColor(android.graphics.Color.parseColor("#445577"));
+                  terminalInput.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
+                  root.addView(terminalInput);
+
+                  Button runBtn = new Button(this);
+                  runBtn.setText("ACTIVATE AUTOMATION ENGINE");
+                  runBtn.setBackgroundColor(android.graphics.Color.parseColor("#0055FF"));
+                  runBtn.setTextColor(android.graphics.Color.parseColor("#FFFFFF"));
+                  
+                  runBtn.setOnClickListener(new View.OnClickListener() {
+                      @Override
+                      public void onClick(View v) {
+                          final String query = terminalInput.getText().toString();
+                          if(query.isEmpty()) return;
+                          
+                          chatDisplay.append("User: " + query + "\n");
+                          matrixLog.setText("🤖 Running Deep Micro-Analysis... Querying cosmic data channels...");
+                          terminalInput.setText("");
+                          
+                          new Thread(new Runnable() {
+                              @Override
+                              public void run() {
+                                  try {
+                                      URL url = new URL("https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=" + GEMINI_API_KEY);
+                                      HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                                      conn.setRequestMethod("POST");
+                                      conn.setRequestProperty("Content-Type", "application/json");
+                                      conn.setDoOutput(true);
+
+                                      // Specialized system prompt instructions based on user notes
+                                      String systemPrompt = "You are Scientist AI. You have the knowledge of all books in the world. Analyze this design step-by-step, explain what parts are needed, and how to assemble it fast: " + query;
+                                      String jsonBody = "{\"contents\": [{\"parts\":[{\"text\":\"" + systemPrompt + "\"}]}]}";
+                                      
+                                      OutputStream os = conn.getOutputStream();
+                                      os.write(jsonBody.getBytes());
+                                      os.flush();
+
+                                      BufferedReader br = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                                      StringBuilder response = new StringBuilder();
+                                      String line;
+                                      while ((line = br.readLine()) != null) { response.append(line); }
+
+                                      JSONObject resObj = new JSONObject(response.toString());
+                                      final String aiReply = resObj.getJSONArray("candidates").getJSONObject(0).getJSONObject("content").getJSONArray("parts").getJSONObject(0).getString("text");
+
+                                      runOnUiThread(new Runnable() {
+                                          @Override
+                                          public void run() {
+                                              chatDisplay.append("AI: " + aiReply + "\n\n");
+                                              matrixLog.setText("✨ MICRO-ANALYSIS RECALIBRATED - DATA SHIFT COMPLETE");
+                                          }
+                                      });
+                                  } catch (Exception e) {
+                                      runOnUiThread(new Runnable() {
+                                          @Override
+                                          public void run() {
+                                              chatDisplay.append("AI: Secret Key processing error. Ensure GEMINI_API_KEY is defined in GitHub Secrets.\n\n");
+                                              matrixLog.setText("⚠️ LINK ARCHITECTURE DISCONNECTED");
+                                          }
+                                      });
+                                  }
+                              }
+                          }).start();
+                      }
+                  });
+                  root.addView(runBtn);
+
+                  setContentView(root);
+              }
+          }
+          EOF
+
+      - name: 5. Inject Manifest Assets and Layout Definitions
+        run: |
+          cat << 'EOF' > app/src/main/AndroidManifest.xml
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.scientist.ai">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <application android:allowBackup="true" android:label="Scientist AI" android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
+                  <activity android:name=".MainActivity" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+      - name: 6. Install Local Gradle Wrapper System
+        run: gradle wrapper --gradle-version 8.2
+
+      - name: 7. Run Compilation Matrix For Production APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleDebug
+
+      - name: 8. Deliver Native Artifact APK to Actions Dashboard
+        uses: actions/upload-artifact@v4
+        with:
+          name: Scientist_AI_Production_Package
+          path: app/build/outputs/apk/debug/app-debug.apk
+          
