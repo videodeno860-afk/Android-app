@@ -15,29 +15,31 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: 3. Automate Directory And Architecture Structure
+      - name: 3. Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: 4. Automate Directory And Architecture Structure
         run: |
           mkdir -p app/src/main/java/com/scientist/ai
           mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
           mkdir -p gradle/wrapper
 
-          # Build root project definitions
+          # Fixed root build.gradle with correct plugins syntax
           cat << 'EOF' > build.gradle
-          buildscript {
-              repositories { google(); mavenCentral() }
-              dependencies { classpath 'com.android.tools.build:gradle:8.1.1' }
-          }
-          allprojects {
-              repositories { google(); mavenCentral() }
+          plugins {
+              id 'com.android.application' version '8.1.1' apply false
+              id 'com.android.library' version '8.1.1' apply false
           }
           EOF
 
           echo "include ':app'" > settings.gradle
 
-          # App level production architecture setup
+          # Fixed app level build.gradle matching modern gradle specs
           cat << 'EOF' > app/build.gradle
-          plugins { id 'com.android.application' }
+          plugins {
+              id 'com.android.application'
+          }
           android {
               namespace 'com.scientist.ai'
               compileSdk 34
@@ -48,6 +50,11 @@ jobs:
                   versionCode 1
                   versionName "1.0"
               }
+              buildTypes {
+                  release {
+                      minifyEnabled false
+                  }
+              }
           }
           dependencies {
               implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -56,9 +63,8 @@ jobs:
           }
           EOF
 
-      - name: 4. Inject Complete Functional Core Logic (MainActivity.java)
+      - name: 5. Inject Complete Functional Core Logic (MainActivity.java)
         env:
-          # GitHub Actions ki secrets library se API Key auto fetch ho rahi hai
           SECRET_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           cat << EOF > app/src/main/java/com/scientist/ai/MainActivity.java
@@ -71,7 +77,6 @@ jobs:
           import android.widget.LinearLayout;
           import android.widget.ScrollView;
           import android.widget.TextView;
-          import android.widget.Toast;
           import androidx.appcompat.app.AppCompatActivity;
           import java.io.BufferedReader;
           import java.io.InputStreamReader;
@@ -94,7 +99,6 @@ jobs:
                   root.setBackgroundColor(android.graphics.Color.parseColor("#02060C"));
                   root.setPadding(30, 50, 30, 30);
 
-                  // 1. Header & Identity Section
                   TextView title = new TextView(this);
                   title.setText("⚛️ SCIENTIST AI - COGNITIVE FACTORY");
                   title.setTextColor(android.graphics.Color.parseColor("#00FFFF"));
@@ -102,7 +106,6 @@ jobs:
                   title.setGravity(android.view.Gravity.CENTER);
                   root.addView(title);
 
-                  // 2. 3D Canvas Matrix & Deep Micro-Analysis Display
                   TextView canvasHeader = new TextView(this);
                   canvasHeader.setText("\n🛰️ 3D SHAPES MATRIX CANVAS");
                   canvasHeader.setTextColor(android.graphics.Color.parseColor("#00FFFF"));
@@ -115,7 +118,6 @@ jobs:
                   matrixLog.setPadding(20, 20, 20, 20);
                   root.addView(matrixLog);
 
-                  // 3. Dual-Currency Wallet Section (Notes Page 2)
                   TextView walletHeader = new TextView(this);
                   walletHeader.setText("\n💳 SECURE TRANSACTION WALLET");
                   walletHeader.setTextColor(android.graphics.Color.parseColor("#FFFF00"));
@@ -128,7 +130,6 @@ jobs:
                   walletDisplay.setPadding(20, 20, 20, 20);
                   root.addView(walletDisplay);
 
-                  // 4. Live Chat Co-Pilot Interface (Notes Page 6)
                   TextView chatHeader = new TextView(this);
                   chatHeader.setText("\n💬 SCIENTIST KNOWLEDGE PANEL");
                   chatHeader.setTextColor(android.graphics.Color.parseColor("#39FF14"));
@@ -143,7 +144,6 @@ jobs:
                   scroller.addView(chatDisplay);
                   root.addView(scroller);
 
-                  // 5. Terminal Control Console
                   terminalInput = new EditText(this);
                   terminalInput.setHint("Enter shapes info, logic or question...");
                   terminalInput.setHintTextColor(android.graphics.Color.parseColor("#445577"));
@@ -175,7 +175,6 @@ jobs:
                                       conn.setRequestProperty("Content-Type", "application/json");
                                       conn.setDoOutput(true);
 
-                                      // Specialized system prompt instructions based on user notes
                                       String systemPrompt = "You are Scientist AI. You have the knowledge of all books in the world. Analyze this design step-by-step, explain what parts are needed, and how to assemble it fast: " + query;
                                       String jsonBody = "{\"contents\": [{\"parts\":[{\"text\":\"" + systemPrompt + "\"}]}]}";
                                       
@@ -218,7 +217,7 @@ jobs:
           }
           EOF
 
-      - name: 5. Inject Manifest Assets and Layout Definitions
+      - name: 6. Inject Manifest Assets and Layout Definitions
         run: |
           cat << 'EOF' > app/src/main/AndroidManifest.xml
           <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.scientist.ai">
@@ -234,17 +233,17 @@ jobs:
           </manifest>
           EOF
 
-      - name: 6. Install Local Gradle Wrapper System
-        run: gradle wrapper --gradle-version 8.2
+      - name: 7. Enforce Controlled Gradle Wrapper Version (Fixes Crash)
+        run: |
+          gradle wrapper --gradle-version 8.0
 
-      - name: 7. Run Compilation Matrix For Production APK
+      - name: 8. Run Compilation Matrix For Production APK
         run: |
           chmod +x gradlew
           ./gradlew assembleDebug
 
-      - name: 8. Deliver Native Artifact APK to Actions Dashboard
+      - name: 9. Deliver Native Artifact APK to Actions Dashboard
         uses: actions/upload-artifact@v4
         with:
           name: Scientist_AI_Production_Package
           path: app/build/outputs/apk/debug/app-debug.apk
-          
