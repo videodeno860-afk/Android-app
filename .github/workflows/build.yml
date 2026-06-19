@@ -20,16 +20,13 @@ jobs:
 
       - name: 4. Build Complete Isolated Project Architecture From Scratch
         run: |
-          # Pehle ka saara purana kachra aur corrupt cache delete
           rm -rf app build.gradle settings.gradle gradlew gradle .gradle
-          
-          # Naye clean folder structure banana
           mkdir -p app/src/main/java/com/scientist/ai
           mkdir -p app/src/main/res/layout
           mkdir -p app/src/main/res/values
           mkdir -p gradle/wrapper
 
-          # A. Perfect Root settings.gradle Configuration
+          # A. Perfect settings.gradle (Global Repository Control)
           cat << 'EOF' > settings.gradle
           pluginManagement {
               repositories {
@@ -48,7 +45,7 @@ jobs:
           include ':app'
           EOF
 
-          # B. Rock-Solid Root build.gradle Configuration
+          # B. Fixed Root build.gradle (Removed conflicting allprojects block)
           cat << 'EOF' > build.gradle
           buildscript {
               repositories {
@@ -57,12 +54,6 @@ jobs:
               }
               dependencies {
                   classpath 'com.android.tools.build:gradle:8.0.2'
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
               }
           }
           EOF
@@ -247,7 +238,7 @@ jobs:
           }
           EOF
 
-      - name: 6. Inject Live Secret Variable Securely (Bypasses Local Leaks)
+      - name: 6. Inject Live Secret Variable Securely
         run: |
           sed -i "s/SECRET_KEY_PLACEHOLDER/${{ secrets.GEMINI_API_KEY }}/g" app/src/main/java/com/scientist/ai/MainActivity.java
 
@@ -267,9 +258,8 @@ jobs:
           </manifest>
           EOF
 
-      - name: 8. Inject Standalone Wrapper Config (Bypasses Server Glitches)
+      - name: 8. Inject Standalone Wrapper Config
         run: |
-          # Is baar hum server ka global wrapper command chalayenge hi nahi! Direct clean internal properties file write karenge.
           cat << 'EOF' > gradle/wrapper/gradle-wrapper.properties
           distributionBase=GRADLE_USER_HOME
           distributionPath=wrapper/dists
@@ -285,7 +275,6 @@ jobs:
 
       - name: 10. Execute Final Matrix Production Build
         run: |
-          # Standalone environment system ko trigger karna bina kisi daemon collision ke
           gradle assembleDebug --no-daemon
 
       - name: 11. Deliver Final Real Verified APK to Action Dashboard
